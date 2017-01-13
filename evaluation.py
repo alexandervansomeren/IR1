@@ -41,11 +41,10 @@ Binary evaluation measures
 def precision_at_k(ranking, k):
     return np.divide((np.array(ranking) > 0)[0:k].sum(), float(k))
 
-
-def recall_at_k(ranking, k):
-    boolean_ranking = (np.array(ranking) > 0)
-    number_of_relevant = boolean_ranking.sum()
-    return np.divide(boolean_ranking[0:k].sum(), float(number_of_relevant))
+# def recall_at_k(ranking, k):
+#     boolean_ranking = (np.array(ranking) > 0)
+#     number_of_relevant = boolean_ranking.sum()
+#     return np.divide(boolean_ranking[0:k].sum(), float(number_of_relevant))
 
 
 def average_precision(ranking):
@@ -88,11 +87,9 @@ Expected Reciprocal Rank (ERR)
 """
 
 
-def prob(rank, gmax):
-    return float(2 ** rank - 1) / 2 ** gmax
-
-
 def expected_reciprocal_rank(ranking):
+    def prob(rank, gmax):
+        return float(2 ** rank - 1) / 2 ** gmax
     measure = 0
     n = len(ranking)
     gmax = 4
@@ -110,14 +107,6 @@ Step 3
 ---------------------------------------------------------------------------------------------
 """
 
-precision_at_4_won_by_e = []
-for rankings in p_and_e_combinations():
-    ranking_p = rankings[0]
-    ranking_e = rankings[1]
-
-    if precision_at_k(ranking_e, k=4) > precision_at_k(ranking_p, k=4):
-        precision_at_4_won_by_e.append(rankings)
-
 
 def show_results(result_list, number=10):
     print "       P       ||        E      "
@@ -126,6 +115,27 @@ def show_results(result_list, number=10):
     result_list = random.sample(result_list, number)
     for i, result in enumerate(result_list):
         print str(result[0]) + '||' + str(result[1])
+
+
+precision_at_4_won_by_e = []
+dcg_at_4_won_by_e = []
+ranked_biased_precision_won_by_e = []
+for rankings in p_and_e_combinations():
+    ranking_p = rankings[0]
+    ranking_e = rankings[1]
+
+    # Precision at rank 4
+    if precision_at_k(ranking_e, k=4) > precision_at_k(ranking_p, k=4):
+        precision_at_4_won_by_e.append(rankings)
+
+    # DCG at 4
+    if discounted_cumulative_gain_at_k(ranking_e, k=4) > discounted_cumulative_gain_at_k(ranking_p, k=4):
+        dcg_at_4_won_by_e.append(rankings)
+
+    # ERR
+    if rank_biased_precision(ranking_e, p=0.8) > rank_biased_precision(ranking_p, p=0.8):
+        ranked_biased_precision_won_by_e.append(rankings)
+
 
 print "\nPrecision at rank 4 won by e: \n"
 print show_results(precision_at_4_won_by_e, 20)
