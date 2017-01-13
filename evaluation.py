@@ -23,8 +23,7 @@ combinations = p_and_e_combinations()
 combinations_list = list(combinations)
 
 # combinations_sample = random.sample(list(combinations), 1000)
-
-# print list(combinations)
+ 
 
 
 """
