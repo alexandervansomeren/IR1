@@ -45,9 +45,9 @@ def rate_team_draft_interleaved(interleaved, click_pattern):
     else:
         return names[1]
 
-
-interleaved = team_draft_interleaving(p, 'p', e, 'e')
-print interleaved
-click_pattern = [0, 0, 1, 1, 0]
-
-print rate_team_draft_interleaved
+#
+# interleaved = team_draft_interleaving(p, 'p', e, 'e')
+# print interleaved
+# click_pattern = [0, 0, 1, 1, 0]
+#
+# print rate_team_draft_interleaved

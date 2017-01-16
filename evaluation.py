@@ -15,8 +15,8 @@ def p_and_e_combinations(number_of_ratings=3, length=5):
     return itertools.product(p, e)
 
 
-# combinations = p_and_e_combinations(3, 2)
-
+# combinations = p_and_e_combinations(3, 5)
+#
 # combinations_list = list(combinations)
 
 # combinations_sample = random.sample(list(combinations), 1000)
@@ -35,6 +35,7 @@ Binary evaluation measures
 
 def precision_at_k(ranking, k):
     return np.divide((np.array(ranking) > 0)[0:k].sum(), float(k))
+
 
 # def recall_at_k(ranking, k):
 #     boolean_ranking = (np.array(ranking) > 0)
@@ -130,19 +131,21 @@ for rankings in p_and_e_combinations():
     # DCG at 5
     if discounted_cumulative_gain_at_k(ranking_e, k=5) > discounted_cumulative_gain_at_k(ranking_p, k=5):
         dcg_at_4_won_by_e.append(rankings)
-        delta_dcg_at_5.append(discounted_cumulative_gain_at_k(ranking_e, k=5) - discounted_cumulative_gain_at_k(ranking_p, k=5))
+        delta_dcg_at_5.append(
+            discounted_cumulative_gain_at_k(ranking_e, k=5) - discounted_cumulative_gain_at_k(ranking_p, k=5))
 
     # Rank biased precision
     if rank_biased_precision(ranking_e, p=0.8) > rank_biased_precision(ranking_p, p=0.8):
         ranked_biased_precision_won_by_e.append(rankings)
         delta_rbp.append(rank_biased_precision(ranking_e, p=0.8) - rank_biased_precision(ranking_p, p=0.8))
 
+# print "delta_dcg_at_5"
+# print delta_dcg_at_5
+#
+# print "precision_at_5"
+# print delta_precision_at_5
+#
+# print "\nPrecision at rank 4 won by e: \n"
+# print show_results(precision_at_5_won_by_e, 20)
 
-print "delta_dcg_at_5"
-print delta_dcg_at_5
-
-print "precision_at_5"
-print delta_precision_at_5
-
-print "\nPrecision at rank 4 won by e: \n"
-print show_results(precision_at_5_won_by_e, 20)
+# print combinations_list

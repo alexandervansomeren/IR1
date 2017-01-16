@@ -49,10 +49,10 @@ def rate_interleaved(interleaved, click_pattern):
         return names[1]
 
 
-interleaved = team_draft_interleaving(p, 'p', e, 'e')
-print interleaved
-click_pattern = [0, 0, 1, 1, 0]
-#
+# interleaved = team_draft_interleaving(p, 'p', e, 'e')
+# print interleaved
+# click_pattern = [0, 0, 1, 1, 0]
+# #
 # p = (1, 0, 1, 2, 0)
 # e = (0, 0, 1, 1, 0)
 
@@ -131,5 +131,5 @@ def prob_interleaving(serp1, serp1_name, serp2, serp2_name, all_unique=False):
     return interleaved
 
 
-interleaved2 = prob_interleaving(p, 'p', e, 'e', all_unique=True)
-print interleaved2
+# interleaved2 = prob_interleaving(p, 'p', e, 'e', all_unique=True)
+# print interleaved2
