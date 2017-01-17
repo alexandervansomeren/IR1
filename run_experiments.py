@@ -8,6 +8,8 @@ from evaluation import rank_biased_precision
 import click_models
 import interleaving
 
+import progressbar
+
 """
 Read queries and train click models
 """
@@ -38,25 +40,19 @@ combinations_list = list(combinations)
 # e_wins_prob_sdcm = 0.0
 results = []
 
-for relevant_scores in combinations_list:
+bar = progressbar.ProgressBar(maxval=len(combinations_list),
+                              widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
+
+N = 100
+for relevant_scores in bar(combinations_list):
     result = {}
     p = list(relevant_scores[0])
     e = list(relevant_scores[1])
     interleaved_team_draft = interleaving.team_draft_interleaving(p, 'p', e, 'e', all_unique=True)
     interleaved_prob = interleaving.prob_interleaving(p, 'p', e, 'e', all_unique=True)
 
-    relevance_labels_interleaved = [rel for rel, _ in interleaved_team_draft]
-
-    result['rcm-team_draft'] = interleaving.rate_interleaved(interleaved_team_draft, random_click_model.predict_clicks(
-        relevance_labels_interleaved))
-    result['rcm-prob'] = interleaving.rate_interleaved(interleaved_prob,
-                                                       random_click_model.predict_clicks(relevance_labels_interleaved))
-
-    result['sdcm-team_draft'] = interleaving.rate_interleaved(interleaved_team_draft,
-                                                              simple_dependent_click_model.predict_clicks(
-                                                                  relevance_labels_interleaved))
-    result['sdcm-prob'] = interleaving.rate_interleaved(interleaved_prob, simple_dependent_click_model.predict_clicks(
-        relevance_labels_interleaved))
+    relevance_labels_team_draft = [rel for rel, _ in interleaved_team_draft]
+    relevance_labels_prob = [rel for rel, _ in interleaved_team_draft]
 
     result['p_precision_at_5'] = precision_at_k(p, 5)
     result['e_precision_at_5'] = precision_at_k(e, 5)
@@ -67,15 +63,37 @@ for relevant_scores in combinations_list:
     result['p_rank_biased_precision'] = rank_biased_precision(p)
     result['e_rank_biased_precision'] = rank_biased_precision(e)
 
+    rcm_team_draft = 0.0
+    rcm_prob = 0.0
+    sdcm_team_draft = 0.0
+    sdcm_prob = 0.0
+    for _ in range(N):
+        if interleaving.rate_interleaved(interleaved_team_draft, random_click_model.predict_clicks(
+                relevance_labels_team_draft)) == 'e':
+            rcm_team_draft += 1
+
+        if interleaving.rate_interleaved(interleaved_prob,
+                                         random_click_model.predict_clicks(relevance_labels_prob)) == 'e':
+            rcm_prob += 1
+
+        if interleaving.rate_interleaved(interleaved_team_draft,
+                                         simple_dependent_click_model.predict_clicks(
+                                             relevance_labels_team_draft)) == 'e':
+            sdcm_team_draft += 1
+
+        if interleaving.rate_interleaved(interleaved_prob, simple_dependent_click_model.predict_clicks(
+                relevance_labels_prob)) == 'e':
+            sdcm_prob += 1
+
+    result['rcm-team_draft'] = rcm_team_draft / N
+    result['rcm-prob'] = rcm_prob / N
+    result['sdcm-team_draft'] = sdcm_team_draft / N
+    result['sdcm-prob'] = sdcm_prob / N
     results.append(result)
 
 result_data = pd.DataFrame(results)
 
 with open('result_data.pickle', 'w') as f:
-    pickle.dump(results, f)
+    pickle.dump(result_data, f)
 
 print result_data.describe()
-# print "------------------------------------"
-# print "                       E wins from P"
-# print "RCM-team_draft : %19.4f" % (e_wins_team_draft_rcm/N)
-# print "RCM-prob       : %19.4f" % (e_wins_prob_rcm/N)
