@@ -38,20 +38,28 @@ combinations_list = list(combinations)
 # e_wins_prob_sdcm = 0.0
 results = []
 
-for relevant_scores in combinations_list[0:len(combinations_list)]:
+for relevant_scores in combinations_list:
     result = {}
     p = list(relevant_scores[0])
     e = list(relevant_scores[1])
     interleaved_team_draft = interleaving.team_draft_interleaving(p, 'p', e, 'e', all_unique=True)
     interleaved_prob = interleaving.prob_interleaving(p, 'p', e, 'e', all_unique=True)
 
-    result['rcm-team_draft'] = interleaving.rate_interleaved(interleaved_team_draft, random_click_model.predict_clicks())
-    result['rcm-prob'] = interleaving.rate_interleaved(interleaved_prob, random_click_model.predict_clicks())
+    relevance_labels_interleaved = [rel for rel, _ in interleaved_team_draft]
+
+    result['rcm-team_draft'] = interleaving.rate_interleaved(interleaved_team_draft, random_click_model.predict_clicks(
+        relevance_labels_interleaved))
+    result['rcm-prob'] = interleaving.rate_interleaved(interleaved_prob,
+                                                       random_click_model.predict_clicks(relevance_labels_interleaved))
+
+    result['sdcm-team_draft'] = interleaving.rate_interleaved(interleaved_team_draft,
+                                                              simple_dependent_click_model.predict_clicks(
+                                                                  relevance_labels_interleaved))
+    result['sdcm-prob'] = interleaving.rate_interleaved(interleaved_prob, simple_dependent_click_model.predict_clicks(
+        relevance_labels_interleaved))
 
     result['p_precision_at_5'] = precision_at_k(p, 5)
     result['e_precision_at_5'] = precision_at_k(e, 5)
-
-
 
     result['p_discounted_cumulative_gain_at_5'] = discounted_cumulative_gain_at_k(p, 5)
     result['e_discounted_cumulative_gain_at_5'] = discounted_cumulative_gain_at_k(e, 5)
@@ -59,16 +67,12 @@ for relevant_scores in combinations_list[0:len(combinations_list)]:
     result['p_rank_biased_precision'] = rank_biased_precision(p)
     result['e_rank_biased_precision'] = rank_biased_precision(e)
 
-
-
     results.append(result)
-
 
 result_data = pd.DataFrame(results)
 
 with open('result_data.pickle', 'w') as f:
     pickle.dump(results, f)
-
 
 print result_data.describe()
 # print "------------------------------------"

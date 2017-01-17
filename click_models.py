@@ -88,16 +88,17 @@ class SimpleDependentClickModel():
     def predict_clicks(self, relevance_labels_list, max_relevance=2):
         clicks = []
         epsilon = 1
-        alpha = [relevance / float(max_relevance) for relevance in relevance_labels_list]
+        alpha = [relevance / float(max_relevance+1) for relevance in relevance_labels_list]
         for r in range(len(relevance_labels_list)):
             prob = alpha[r] * epsilon
             clicks.append(int(random.random() < prob))
-            if sum(clicks > 0):
-                epsilon = (clicks[r]*self.lambdas[r] + (1-clicks[r]) *  
-                          (1-alpha[r])*epsilon / float(1-alpha[r]*epsilon))
+            if sum(clicks) > 0:
+                epsilon = (clicks[r] * self.lambdas[r] + (1 - clicks[r]) *
+                           (1 - alpha[r]) * epsilon / float(1 - alpha[r] * epsilon))
             else:
                 epsilon = epsilon * (alpha[r] * self.lambdas[r] + (1 - alpha[r]))
         return clicks
+
 
 """
     def attractiveness(self, relevance_labels_list):
