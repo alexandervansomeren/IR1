@@ -41,8 +41,6 @@ Random Click Model
 class RandomClickModel():
     def __init__(self):
         self.rho = 0.0
-        self.probabilities = []
-        self.serp_length = 0
 
     def train(self, queries):
         amount_of_clicks = 0
@@ -51,15 +49,11 @@ class RandomClickModel():
             amount_of_clicks += len(query["click_pattern"])
         amount_of_shown_docs = len(queries) * 10
         self.rho = float(amount_of_clicks) / amount_of_shown_docs
-        self.probabilities = self.serp_length * [self.rho]
 
-    def probabilities(self, relevance_labels_list):
-        return self.probabilities[0:len(relevance_labels_list)]
-
-    def predict_clicks(self):
+    def predict_clicks(self, relevance_labels_list):
         clicks = []
-        for p in self.probabilities:
-            clicks.append(int(random.random() < p))
+        for _ in range(len(relevance_labels_list)):
+            clicks.append(int(random.random() < self.rho))
         return clicks
 
 
@@ -91,9 +85,32 @@ class SimpleDependentClickModel():
             lambdas.append(l)
         self.lambdas = lambdas
 
-    def sdcm_probabilities(ranking, lambdas):
-        pass
+    def predict_clicks(self, relevance_labels_list):
+        clicks = []
+        epsilon = 1
+        alpha = attractiveness(relevance_labels_list)
+        for r in range(len(relevance_labels_list)):
+            prob =  alpha[r] * epsilon
+            clicks.append(int(random.random() < prob))
+            if sum(clicks > 0):
+                epsilon = clicks[r]*lambdas[r] + (1-clicks[r]) * 
+                          (1-alpha[r])*epsilon / float(1-alpha[r]*epsilon)
+            else:
+                epsilon = epsilon * (alpha[r]*self.lambdas[r] + (1-alpha[r]))
+        return clicks
 
+    def attractiveness(self, relevance_labels_list):
+        return [relevance/float(2) for relevance in relevance_labels_list]
+
+"""
+    def attractiveness(self, relevance_labels_list):
+        alpha = []
+        for relevance in relevance_labels_list:
+            if   relevance == 0: alpha.append(0)
+            elif relevance == 1: alpha.append(0.5)
+            elif relevance == 2: alpha.append(1)
+        return alpha
+"""
 
 # ranking = [0, 1, 1, 2, 0]
 # queries = read_click_log_file()
