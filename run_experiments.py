@@ -1,7 +1,12 @@
+import pandas as pd
+import cPickle as pickle
+
 from evaluation import p_and_e_combinations
+from evaluation import precision_at_k
+from evaluation import discounted_cumulative_gain_at_k
+from evaluation import rank_biased_precision
 import click_models
 import interleaving
-
 
 """
 Read queries and train click models
@@ -27,17 +32,46 @@ Interleave
 combinations = p_and_e_combinations(3, 5)
 combinations_list = list(combinations)
 
-e_wins_rcm = 0.0
-e_wins_sdcm = 0.0
-N = 0.0
-for results in combinations_list:
-    p = list(results[0])
-    e = list(results[1])
-    interleaved = interleaving.team_draft_interleaving(p, 'p', e, 'e', all_unique=True)
-    if interleaving.rate_interleaved(interleaved, random_click_model.predict_clicks()) == 'e':
-        e_wins_rcm += 1
-    N += 1
+# e_wins_team_draft_rcm = 0.0
+# e_wins_prob_rcm = 0.0
+# e_wins_team_draft_sdcm = 0.0
+# e_wins_prob_sdcm = 0.0
+results = []
 
-print "--------------------------"
-print "             E wins from P"
-print "RCM: %21.2f" % (e_wins_rcm/N)
+for relevant_scores in combinations_list[0:len(combinations_list)]:
+    result = {}
+    p = list(relevant_scores[0])
+    e = list(relevant_scores[1])
+    interleaved_team_draft = interleaving.team_draft_interleaving(p, 'p', e, 'e', all_unique=True)
+    interleaved_prob = interleaving.prob_interleaving(p, 'p', e, 'e', all_unique=True)
+
+    result['rcm-team_draft'] = interleaving.rate_interleaved(interleaved_team_draft, random_click_model.predict_clicks())
+    result['rcm-prob'] = interleaving.rate_interleaved(interleaved_prob, random_click_model.predict_clicks())
+
+    result['p_precision_at_5'] = precision_at_k(p, 5)
+    result['e_precision_at_5'] = precision_at_k(e, 5)
+
+
+
+    result['p_discounted_cumulative_gain_at_5'] = discounted_cumulative_gain_at_k(p, 5)
+    result['e_discounted_cumulative_gain_at_5'] = discounted_cumulative_gain_at_k(e, 5)
+
+    result['p_rank_biased_precision'] = rank_biased_precision(p)
+    result['e_rank_biased_precision'] = rank_biased_precision(e)
+
+
+
+    results.append(result)
+
+
+result_data = pd.DataFrame(results)
+
+with open('result_data.pickle', 'w') as f:
+    pickle.dump(results, f)
+
+
+print result_data.describe()
+# print "------------------------------------"
+# print "                       E wins from P"
+# print "RCM-team_draft : %19.4f" % (e_wins_team_draft_rcm/N)
+# print "RCM-prob       : %19.4f" % (e_wins_prob_rcm/N)

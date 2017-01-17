@@ -85,22 +85,19 @@ class SimpleDependentClickModel():
             lambdas.append(l)
         self.lambdas = lambdas
 
-    def predict_clicks(self, relevance_labels_list):
+    def predict_clicks(self, relevance_labels_list, max_relevance):
         clicks = []
         epsilon = 1
-        alpha = attractiveness(relevance_labels_list)
+        alpha = [relevance / max_relevance for relevance in relevance_labels_list]
         for r in range(len(relevance_labels_list)):
-            prob =  alpha[r] * epsilon
+            prob = alpha[r] * epsilon
             clicks.append(int(random.random() < prob))
             if sum(clicks > 0):
-                epsilon = clicks[r]*lambdas[r] + (1-clicks[r]) * 
-                          (1-alpha[r])*epsilon / float(1-alpha[r]*epsilon)
+                epsilon = clicks[r] * self.lambdas[r] + (1 - clicks[r]) * (1 - alpha[r]) * epsilon / float(1 - alpha[r] * epsilon)
             else:
-                epsilon = epsilon * (alpha[r]*self.lambdas[r] + (1-alpha[r]))
+                epsilon = epsilon * (alpha[r] * self.lambdas[r] + (1 - alpha[r]))
         return clicks
 
-    def attractiveness(self, relevance_labels_list):
-        return [relevance/float(2) for relevance in relevance_labels_list]
 
 """
     def attractiveness(self, relevance_labels_list):
