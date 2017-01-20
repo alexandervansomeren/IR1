@@ -97,3 +97,6 @@ with open('result_data.pickle', 'w') as f:
     pickle.dump(result_data, f)
 
 print result_data.describe()
+
+result_data[result_data['e_discounted_cumulative_gain_at_5'] < result_data['p_discounted_cumulative_gain_at_5']][
+    ['rcm-prob', 'rcm-team_draft', 'sdcm-prob', 'sdcm-team_draft']].describe()
