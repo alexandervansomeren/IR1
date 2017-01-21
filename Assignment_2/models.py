@@ -11,12 +11,7 @@ def bm25():
 def construct_tf(topics, index):
     token2id, id2token, _ = index.get_dictionary()
     query_terms = collect_query_terms(topics, token2id)
-    print(len(query_terms))
-    print(index.document_count())
-    print(type(len(query_terms)))
-    print(type(index.document_count()))
-    tf = np.zeros(28, 164597)
-    tf = np.zeros(len(query_terms), index.document_count())
+    tf = np.zeros([len(query_terms), index.document_count()])
     for doc_id in range(index.document_base(), index.maximum_document()):
         for term_id, term in enumerate(query_terms):
             if term in index.document(doc_id)[1]:
