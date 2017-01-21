@@ -28,7 +28,7 @@ def main():
     # df = models.construct_df(tf)
 
     # Run models
-    # tf_idf = models.tf_idf(tf, df)
+    tf_idf = models.tf_idf(tf)
     # bm25 = models.bm25(tf, df)
 
 

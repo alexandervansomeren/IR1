@@ -1,10 +1,12 @@
 import numpy as np
 
 
-def tf_idf(tf, df):
-    pass
-    # query_terms = collect_query_terms(topics)
-
+def tf_idf(tf):
+    if 0 in tf:
+        tf += 0.001
+    df = tf.sum(axis=1)
+    n_docs = df.shape(2)
+    return np.log(1+tf).T*np.log(n_docs/df.T)  # tf-idf
 
 def bm25():
     pass
@@ -24,10 +26,6 @@ def construct_tf(topics, index, max_query_terms=0, max_documents=0):
             if term in index.document(doc_id+1)[1]:
                 tf[term_id, doc_id] = index.document(doc_id+1)[1].count(term)
     return tf
-
-
-def construct_df(tf):
-    pass
 
 
 def collect_query_terms(topics, token2id):
