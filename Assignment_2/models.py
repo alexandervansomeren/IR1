@@ -1,3 +1,4 @@
+import numpy as np
 
 def tf_idf(tf, df):
     pass
@@ -10,7 +11,11 @@ def bm25():
 def construct_tf(topics, index):
     token2id, id2token, _ = index.get_dictionary()
     query_terms = collect_query_terms(topics, token2id)
-    tf = np.array()
+    tf = np.zeros(len(query_terms), index.document_count())
+    for doc_id in range(index.document_base(), index.maximum_document()):
+        for term_id, term in enumerate(query_terms):
+            if term in index.document(doc_id)[1]:
+                tf[doc_id-1,term_id] += 1
 
 
 def construct_df(tf):

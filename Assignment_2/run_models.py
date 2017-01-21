@@ -13,7 +13,8 @@ def main():
 
     # Construct term frequency and document frequency
     tf = models.construct_tf(topics, index)
-    df = models.construct_df(tf)
+    print(tf[:,0:20])
+    #df = models.construct_df(tf)
 
     # Run models
     #tf_idf = models.tf_idf(tf, df)
