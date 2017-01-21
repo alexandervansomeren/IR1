@@ -16,11 +16,13 @@ def construct_tf(topics, index, max_query_terms=0, max_documents=0):
     if max_query_terms > 0:
         query_terms = query_terms[0:max_query_terms]
     n_docs = index.document_count()
+    if max_documents > 0:
+        n_docs = max_documents
     tf = np.zeros([len(query_terms), n_docs])
-    for doc_id in range(index.document_base(), index.maximum_document()):
+    for doc_id in range(n_docs):
         for term_id, term in enumerate(query_terms):
-            if term in index.document(doc_id)[1]:
-                tf[term_id, doc_id - 1] += 1
+            if term in index.document(doc_id+1)[1]:
+                tf[term_id, doc_id] = index.document(doc_id+1)[1].count(term)
     return tf
 
 
