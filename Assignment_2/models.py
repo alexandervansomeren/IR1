@@ -15,7 +15,7 @@ def construct_tf(topics, index):
     for doc_id in range(index.document_base(), index.maximum_document()):
         for term_id, term in enumerate(query_terms):
             if term in index.document(doc_id)[1]:
-                tf[doc_id-1,term_id] += 1
+                tf[term_id, doc_id-1] += 1
 
 
 def construct_df(tf):
