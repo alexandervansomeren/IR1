@@ -1,6 +1,7 @@
 import sys
 import io
 import collections
+import logging
 
 def parse_topics(file_or_files,
                  max_topics=sys.maxsize, delimiter=';'):
@@ -41,5 +42,5 @@ def parse_topics(file_or_files,
 
 
 with open('./ap_88_89/topics_title', 'r') as f_topics:
-    topics = utils.parse_topics(f_topics)
+    topics = parse_topics(f_topics)
 
