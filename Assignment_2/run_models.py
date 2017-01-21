@@ -3,7 +3,7 @@ import os
 import pyndri
 import utils
 import models
-import _pickle as pickle
+import numpy as np
 
 
 def main():
@@ -14,16 +14,16 @@ def main():
     with open('./ap_88_89/topics_title', 'r') as f_topics:
         topics = utils.parse_topics(f_topics)
 
-    tf_filename = 'tf.pickle'
+    tf_filename = 'tf.npy'
 
     # Construct term frequency and document frequency
     if os.path.isfile(tf_filename):
         with open(tf_filename, 'r') as f:
-            tf = pickle.load(f)
+            tf = np.load(f)
     else:
         tf = models.construct_tf(topics, index)
         with open(tf_filename, "w") as f:
-            pickle.dump(tf, f)
+            np.save(f, tf)
 
     # df = models.construct_df(tf)
 
