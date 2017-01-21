@@ -12,10 +12,10 @@ def construct_tf(topics, index):
     token2id, id2token, _ = index.get_dictionary()
     query_terms = collect_query_terms(topics, token2id)
     tf = np.zeros([len(query_terms), index.document_count()])
-    for doc_id in range(index.document_base(), index.maximum_document()):
-        for term_id, term in enumerate(query_terms):
-            if term in index.document(doc_id)[1]:
-                tf[term_id, doc_id-1] += 1
+    #for doc_id in range(index.document_base(), index.maximum_document()):
+    #    for term_id, term in enumerate(query_terms):
+    #        if term in index.document(doc_id)[1]:
+    #            tf[term_id, doc_id-1] += 1
     return tf
 
 def construct_df(tf):
@@ -26,6 +26,7 @@ def collect_query_terms(topics, token2id):
     for query_id, query_tokens in topics.items():
         print("Query")
         print(query_tokens)
+        print([q for q in query_tokens])
         query_id_tokens = [token2id.get(query_token,0) for query_token in query_tokens]
         print("IDs")
         print(query_id_tokens)
