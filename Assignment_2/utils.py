@@ -3,42 +3,32 @@ import io
 import logging
 import sys
 
-def parse_topics(file_or_files,
+def parse_topics(f,
                  max_topics=sys.maxsize, delimiter=';'):
     assert max_topics >= 0 or max_topics is None
 
     topics = collections.OrderedDict()
 
-    if not isinstance(file_or_files, list) and \
-            not isinstance(file_or_files, tuple):
-        if hasattr(file_or_files, '__iter__'):
-            file_or_files = list(file_or_files)
-        else:
-            file_or_files = [file_or_files]
+    for line in f:
+        assert(isinstance(line, str))
 
-    for f in file_or_files:
-        #assert isinstance(f, io.IOBase)
+        line = line.strip()
 
-        for line in f:
-            assert(isinstance(line, str))
+        if not line:
+            continue
 
-            line = line.strip()
+        topic_id, terms = line.split(delimiter, 1)
 
-            if not line:
-                continue
+        if topic_id in topics and (topics[topic_id] != terms):
+                logging.error('Duplicate topic "%s" (%s vs. %s).',
+                              topic_id,
+                              topics[topic_id],
+                              terms)
 
-            topic_id, terms = line.split(delimiter, 1)
+        topics[topic_id] = terms
 
-            if topic_id in topics and (topics[topic_id] != terms):
-                    logging.error('Duplicate topic "%s" (%s vs. %s).',
-                                  topic_id,
-                                  topics[topic_id],
-                                  terms)
-
-            topics[topic_id] = terms
-
-            if max_topics > 0 and len(topics) >= max_topics:
-                break
+        if max_topics > 0 and len(topics) >= max_topics:
+            break
 
     return topics
 
