@@ -19,7 +19,7 @@ def parse_topics(file_or_files,
     print(file_or_files)
 
     for f in file_or_files:
-        print(END)
+        print("END")
         print(f)
         assert isinstance(f, io.IOBase)
 
