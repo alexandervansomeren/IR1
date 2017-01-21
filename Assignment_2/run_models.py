@@ -3,7 +3,7 @@ import os
 import pyndri
 import utils
 import models
-import cPickle as pickle
+import _pickle as pickle
 
 
 def main():
