@@ -8,13 +8,15 @@ def bm25():
 
 
 def construct_tf(topics, index):
-    query_terms = collect_query_terms(topics)
+    token2id, id2token, _ = index.get_dictionary()
+    query_terms = collect_query_terms(topics, token2id)
     tf = np.array()
+
 
 def construct_df(tf):
     pass
 
-def collect_query_terms(topics):
+def collect_query_terms(topics, token2id):
     query_terms = set()
     for query_id, query_tokens in topics.items():
         query_id_tokens = [token2id.get(query_token,0) for query_token in query_tokens]
