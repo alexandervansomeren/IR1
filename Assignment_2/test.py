@@ -48,6 +48,6 @@ def parse_topics(file_or_files,
                 break
 
 
-with open('./ap_88_89/topics_title', 'r') as f_topics:
-    topics = parse_topics(f_topics)
+# with open('./ap_88_89/topics_title', 'r') as f_topics:
+#     topics = parse_topics(f_topics)
 
