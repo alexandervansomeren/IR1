@@ -17,7 +17,7 @@ def parse_topics(file_or_files,
             file_or_files = [file_or_files]
 
     for f in file_or_files:
-        assert isinstance(f, io.IOBase)
+        #assert isinstance(f, io.IOBase)
 
         for line in f:
             assert(isinstance(line, str))
