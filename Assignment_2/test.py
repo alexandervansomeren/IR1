@@ -9,6 +9,8 @@ def parse_topics(file_or_files,
 
     topics = collections.OrderedDict()
 
+    print(file_or_files)
+
     if not isinstance(file_or_files, list) and \
             not isinstance(file_or_files, tuple):
         if hasattr(file_or_files, '__iter__'):
@@ -16,6 +18,7 @@ def parse_topics(file_or_files,
         else:
             file_or_files = [file_or_files]
 
+    print("END")
     print(file_or_files)
 
     for f in file_or_files:
