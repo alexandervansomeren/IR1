@@ -16,7 +16,7 @@ def construct_tf(topics, index):
         for term_id, term in enumerate(query_terms):
             if term in index.document(doc_id)[1]:
                 tf[term_id, doc_id-1] += 1
-
+    return tf
 
 def construct_df(tf):
     pass
