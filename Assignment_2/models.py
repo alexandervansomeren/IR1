@@ -24,8 +24,16 @@ def construct_df(tf):
 def collect_query_terms(topics, token2id):
     query_terms = set()
     for query_id, query_tokens in topics.items():
+        print("Query")
+        print(query_tokens)
         query_id_tokens = [token2id.get(query_token,0) for query_token in query_tokens]
+        print("IDs")
+        print(query_id_tokens)
         query_id_tokens = [word_id for word_id in query_id_tokens if word_id > 0]
+        print("IDs without stopwoordjes")
+        print(query_id_tokens)
         query_terms |= set(query_id_tokens)
+        print("SET")
+        print(query_terms)
     return query_terms
 
