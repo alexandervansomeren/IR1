@@ -26,7 +26,7 @@ def collect_query_terms(topics, token2id):
     for query_id, query_tokens in topics.items():
         print("Query")
         print(query_tokens)
-        query_tokens = query_tokens.split(' ')
+        query_tokens = query_tokens.lower().split(' ')
         query_id_tokens = [token2id.get(query_token,0) for query_token in query_tokens]
         print("IDs")
         print(query_id_tokens)
