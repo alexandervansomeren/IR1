@@ -35,11 +35,11 @@ def main():
     idf = np.log(float(tf.shape[1]) / df)
 
     # Run models
-    tf_idf = models.tf_idf(tf, idf)
+    #tf_idf = models.tf_idf(tf, idf)
     bm25 = models.bm25(tf, df, 1.2, 0.75)
 
-    with open('tfidf.npy', 'wb') as f:
-        np.save(f, tf_idf)
+    #with open('tfidf.npy', 'wb') as f:
+    #    np.save(f, tf_idf)
     with open('bm25.npy', 'wb') as f:
         np.save(f, bm25)
 
