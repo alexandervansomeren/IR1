@@ -19,6 +19,7 @@ def main():
     with open('term2index.json', 'r') as f:
         term2index = json.load(f)
 
+    token2id, id2token, _ = index.get_dictionary()
     for query_id, query in topics.items():    
         query_indices = models.query2indices(query, term2index)
         tf_idf_score = models.tf_idf_score(tf_idf, query_indices)
@@ -29,7 +30,12 @@ def main():
         bm25_top3 = bm25_ranked[0:3]
         print(query)
         for i in range(3):
-            print(index.document(i+1))
+            doc = index.document(tf_idf_top3[i]+1)[1]
+            line = str(' ')
+            for word_id in doc:
+                line = line + id2token[word_id] + ' '
+            print(line)
+
 
 
 
