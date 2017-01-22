@@ -33,7 +33,8 @@ def main():
             doc = index.document(tf_idf_top3[i]+1)[1]
             line = str(' ')
             for word_id in doc:
-                line = line + id2token[word_id] + ' '
+                if word_id != 0:
+                    line = line + id2token[word_id] + ' '
             print(line)
 
 
