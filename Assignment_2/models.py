@@ -22,7 +22,7 @@ def bm25_score(bm25, query_indices):
 
 def query2indices(query, term2index):
     query_indices = []    
-    query_tokens = query_tokens.lower().split(' ')
+    query_tokens = query.lower().split(' ')
     for term in query_tokens:
         term_index = term2index[term]
         query_indices.append[term_index] 
