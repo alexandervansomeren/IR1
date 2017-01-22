@@ -33,8 +33,8 @@ def main():
         query_indices = models.query2indices(query, term2index)
         tfidf_score = models.tf_idf_score(tf_idf, query_indices)
         bm25_score = models.bm25_score(bm25, query_indices)
-        tfidf_results[query_id] = zip(tfidf_score, doc_names)
-        bm25_results[query_id] = zip(bm25_score, doc_names)
+        tfidf_results[query_id] = list(zip(tfidf_score, doc_names))
+        bm25_results[query_id] = list(zip(bm25_score, doc_names))
 
     utils.write_run(model_name='tfidf', data=tfidf_results, 
                     out_f='ranking_tfidf.txt', max_objects_per_query=1000)
