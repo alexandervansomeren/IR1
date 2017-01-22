@@ -34,12 +34,12 @@ def main():
         tfidf_score = models.tf_idf_score(tf_idf, query_indices)
         bm25_score = models.bm25_score(bm25, query_indices)
         tfidf_results[query_id] = zip(tfidf_score, doc_names)
-        bm25_results[query_id] = zip(bm35_score, doc_names)
+        bm25_results[query_id] = zip(bm25_score, doc_names)
 
-    write_run(model_name='tfidf', data=tfidf_results, 
-              out_f='ranking_tfidf.txt', max_objects_per_query=1000)
-    write_run(model_name='bm25', data=tfidf_results, 
-              out_f='ranking_bm25.txt', max_objects_per_query=1000)
+    utils.write_run(model_name='tfidf', data=tfidf_results, 
+                    out_f='ranking_tfidf.txt', max_objects_per_query=1000)
+    utils.write_run(model_name='bm25', data=tfidf_results, 
+                    out_f='ranking_bm25.txt', max_objects_per_query=1000)
 
 if __name__ == "__main__":
     main()
