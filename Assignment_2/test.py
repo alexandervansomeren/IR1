@@ -27,7 +27,9 @@ def main():
         bm25_top3 = bm25_ranked[0:3]
         print(query)
         for i in range(3):
-            print(index.document(i+1)
-        
+            print(index.document(i+1))
+
+
+
 if __name__ == "__main__":
     main()
