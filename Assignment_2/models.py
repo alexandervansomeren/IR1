@@ -2,9 +2,9 @@ import numpy as np
 
 
 def tf_idf(tf, df):
-    if 0 in tf:
-        tf += 0.001
-    n_docs = df.shape(2)
+    if 0 in df:
+        df += 0.001
+    n_docs = tf.shape[1]
     return np.log(1 + tf).T * np.log(n_docs / df.T)  # tf-idf
 
 
@@ -17,7 +17,6 @@ def bm25(query, tf, df, query_terms, token2id, k, b):
     
     
 
-
 def cosine_similarity(tf_idf, query):
     return np.einsum('ij,i->j', tf_idf, query) / np.linalg.norm(tf_idf, axis=0) * np.linalg.norm(query)
 
@@ -26,7 +25,7 @@ def construct_tf(topics, index, max_query_terms=0, max_documents=0):
     token2id, id2token, _ = index.get_dictionary()
     query_terms = collect_query_terms(topics, token2id)
     if max_query_terms > 0:
-        query_terms = query_terms[0:max_query_terms]
+        query_terms = set(list(query_terms)[0:max_query_terms])
     n_docs = index.document_count()
     if max_documents > 0:
         n_docs = max_documents

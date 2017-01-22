@@ -18,17 +18,17 @@ def main():
 
     # Construct term frequency and document frequency
     if os.path.isfile(tf_filename):
-        with open(tf_filename, 'r') as f:
+        with open(tf_filename, 'rb') as f:
             tf = np.load(f)
     else:
-        tf = models.construct_tf(topics, index)
-        with open(tf_filename, "w") as f:
+        tf = models.construct_tf(topics, index, max_query_terms=0, max_documents=0)
+        with open(tf_filename, "wb") as f:
             np.save(f, tf)
 
-    df = tf.sum(axis=1)
+    df = (tf > 0).sum(axis=1)
 
     # Run models
-    tf_idf = models.tf_idf(tf)
+    tf_idf = models.tf_idf(tf, df)
     # bm25 = models.bm25(tf, df, 1.2, 0.75)
 
 
