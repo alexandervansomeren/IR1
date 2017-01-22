@@ -2,6 +2,7 @@ import models
 import numpy as np
 import json
 import pyndri
+import utils
 
 def main():
 
