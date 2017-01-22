@@ -10,6 +10,7 @@ def parse_topics(f,
     topics = collections.OrderedDict()
 
     for line in f:
+        assert(isinstance(line, io.IOBase))
         assert(isinstance(line, str))
 
         line = line.strip()
