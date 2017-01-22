@@ -25,11 +25,11 @@ def main():
         with open(tf_filename, "w") as f:
             np.save(f, tf)
 
-    # df = models.construct_df(tf)
+    df = tf.sum(axis=1)
 
     # Run models
     tf_idf = models.tf_idf(tf)
-    # bm25 = models.bm25(tf, df)
+    # bm25 = models.bm25(tf, df, 1.2, 0.75)
 
 
 if __name__ == "__main__":
