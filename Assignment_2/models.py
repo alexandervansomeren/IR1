@@ -4,7 +4,7 @@ import numpy as np
 def tf_idf(tf, idf):
     return (np.log(1 + tf).T * idf.T).T  # tf-idf
 
-def tf_idf_score(query_indices, tf_idf):
+def tf_idf_score(tf_idf, query_indices):
     return tf_idf[query_indices[0:None], :].sum(axis=0)
 
 def bm25(tf, idf, k, b):
@@ -17,8 +17,8 @@ def bm25(tf, idf, k, b):
     #return (((k+1) * tf) / (float(k( (1-b) + b * doc_normalization)) + tf).T * idf.T).T
     return ((((k+1) * tf) / (k * ((1-b) + b * doc_normalization) + tf)).T * idf.T).T
 
-def bm25_score(query_indices, bm): 
-    return bm[query_indices[0:None], :].sum(axis=0) 
+def bm25_score(bm25, query_indices): 
+    return bm25[query_indices[0:None], :].sum(axis=0) 
 
 def query2indices(query, term2index):
     query_indices = []    

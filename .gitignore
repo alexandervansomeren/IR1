@@ -5,6 +5,8 @@
 *.txt
 *.pickle
 *.ipynb
+*.json
+*.npy
 IR1-Assignment2/
 ap_88_89/
 index/
