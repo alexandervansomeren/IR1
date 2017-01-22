@@ -8,8 +8,13 @@ def tf_idf(tf, df):
     return np.log(1 + tf).T * np.log(n_docs / df.T)  # tf-idf
 
 
-def bm25(tf, df, k, b):
-    pass
+def bm25(query, tf, df, query_terms, token2id, k, b):
+    query_tokens = query.lower().split(' ')
+    for doc in range(tf.shape[1]):
+        for term in query_tokens:
+            term_id = token2id.get(query_token
+            (k+1)*tf[query_terms[term_id], 
+    
     
 
 
