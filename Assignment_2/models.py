@@ -1,16 +1,16 @@
 import numpy as np
 
 
-def tf_idf(tf):
+def tf_idf(tf, df):
     if 0 in tf:
         tf += 0.001
-    df = tf.sum(axis=1)
     n_docs = df.shape(2)
     return np.log(1 + tf).T * np.log(n_docs / df.T)  # tf-idf
 
 
-def bm25():
+def bm25(tf, df, k, b):
     pass
+    
 
 
 def cosine_similarity(tf_idf, query):
