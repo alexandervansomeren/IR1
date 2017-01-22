@@ -25,6 +25,9 @@ def main():
         with open(tf_filename, "wb") as f:
             np.save(f, tf)
 
+    query_terms = models.collect_query_terms(topics, token2id)
+    token2tf_index = {id2token[term_id]: index for index, term_id in enumerate(query_terms)}
+
     df = (tf > 0).sum(axis=1)
 
     # Run models

@@ -13,19 +13,29 @@ def bm25(query, tf, df, query_terms, token2id, k, b):
     for doc in range(tf.shape[1]):
         for term in query_tokens:
             term_id = token2id.get(query_token
-            (k+1)*tf[query_terms[term_id], 
-    
+            (k+1)*tf[query_terms[term_id],
+
     
 
 def cosine_similarity(tf_idf, query):
+    """
+
+    :param tf_idf: tf_idf matrix where rows are terms and columns are documents
+    :param query: query representation??
+    :return: numpy array of cosine similarity per document
+    """
     return np.einsum('ij,i->j', tf_idf, query) / np.linalg.norm(tf_idf, axis=0) * np.linalg.norm(query)
+
+
+def rank_tf_idf(tf_idf, query_indices):
+    return tf_idf[query_indices[0:None], :].sum(axis=0)  # ranking per document
 
 
 def construct_tf(topics, index, max_query_terms=0, max_documents=0):
     token2id, id2token, _ = index.get_dictionary()
     query_terms = collect_query_terms(topics, token2id)
     if max_query_terms > 0:
-        query_terms = set(list(query_terms)[0:max_query_terms])
+        query_terms = list(query_terms)[0:max_query_terms]
     n_docs = index.document_count()
     if max_documents > 0:
         n_docs = max_documents
