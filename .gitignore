@@ -1,2 +1,8 @@
 .idea/*
 .DS_Store
+*.swp
+*.pyc
+*.txt
+*.pickle
+*.ipynb
+IR1-Assingment2/*
