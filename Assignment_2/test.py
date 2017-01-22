@@ -30,7 +30,7 @@ def main():
         bm25_top3 = bm25_ranked[0:3]
         print(query)
         for i in range(3):
-            doc = index.document(tf_idf_top3[i]+1)[1]
+            doc = index.document(bm25_top3[i]+1)[1]
             line = str(' ')
             for word_id in doc:
                 if word_id != 0:
