@@ -21,7 +21,7 @@ def main():
         with open(tf_filename, 'rb') as f:
             tf = np.load(f)
     else:
-        tf = models.construct_tf(topics, index, max_query_terms=10, max_documents=10)
+        tf = models.construct_tf(topics, index, max_query_terms=0, max_documents=0)
         with open(tf_filename, "wb") as f:
             np.save(f, tf)
 
