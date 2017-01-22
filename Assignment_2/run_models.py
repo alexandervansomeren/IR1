@@ -32,6 +32,7 @@ def main():
 
     df = (tf > 0).sum(axis=1)
     if 0 in df:
+        df = float(df)
         df += 0.001        
     idf = np.log(float(tf.shape[1]) / df)
 
