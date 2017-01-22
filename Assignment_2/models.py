@@ -25,7 +25,7 @@ def query2indices(query, term2index):
     query_tokens = query.lower().split(' ')
     for term in query_tokens:
         term_index = term2index[term]
-        query_indices.append[term_index] 
+        query_indices.append(term_index)
     return query_indices
 
 def construct_tf(topics, index, max_query_terms=0, max_documents=0):
