@@ -15,7 +15,7 @@ def bm25(tf, idf, k, b):
     #d = (c * idf.T).T
     #return d
     #return (((k+1) * tf) / (float(k( (1-b) + b * doc_normalization)) + tf).T * idf.T).T
-    return (((k+1) * tf) / (k * ((1-b) + b * doc_normalization) + tf)).T * idf.T).T
+    return ((((k+1) * tf) / (k * ((1-b) + b * doc_normalization) + tf)).T * idf.T).T
 
 def bm25_score(query_indices, bm): 
     return bm[query_indices[0:None], :].sum(axis=0) 
