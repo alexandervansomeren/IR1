@@ -24,20 +24,19 @@ def main():
         with open(term2index_filename, 'rb') as f:
             term2index = json.load(f)
     else:
-        tf, term2index = models.construct_tf(topics, index, max_query_terms=0, max_documents=0)
+        tf, term2index = models.construct_tf(topics, index, max_query_terms=0, max_documents=500)
         with open(tf_filename, "wb") as f:
             np.save(f, tf)
         with open(term2index_filename, 'rb') as f:
             json.dump(term2index, f)
 
-
-    query_terms = models.collect_query_terms(topics, token2id)
-    token2tf_index = {id2token[term_id]: index for index, term_id in enumerate(query_terms)}
-
     df = (tf > 0).sum(axis=1)
+    if 0 in df:
+        df += 0.001        
+    idf = np.log(float(tf.shape[1]) / df)
 
     # Run models
-    tf_idf = models.tf_idf(tf, df)
+    tf_idf = models.tf_idf(tf, idf)
     # bm25 = models.bm25(tf, df, 1.2, 0.75)
 
 

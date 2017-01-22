@@ -1,40 +1,26 @@
 import numpy as np
 
 
-def tf_idf(tf, df):
-    if 0 in df:
-        df += 0.001
-    n_docs = tf.shape[1]
-    return np.log(1 + tf).T * np.log(n_docs / df.T)  # tf-idf
+def tf_idf(tf, idf):
+    return (np.log(1 + tf).T * idf.T).T  # tf-idf
 
+def tf_idf_score(query_indices, tf_idf)
+    return tf_idf[query_indices[0:None], :].sum(axis=0)
 
-def bm25(tf, df, query_terms, token2id, k, b):
-    query_tokens = query.lower().split(' ')
-    for doc in range(tf.shape[1]):
-        for term in query_tokens:
-            term_id = token2id.get(query_token
-            (k+1)*tf[query_terms[term_id],
+def bm25(tf, idf, k, b):
+    doc_normalization = tf.sum(axis=0) / float(tf.sum() / float(tf.shape[1]))
+    return (((k+1) * tf) / (float(k( (1-b) + b * doc_normalization)) + tf).T * idf.T).T
 
-def bm25_score(query_terms, bm, term2index)
-    score = np.zeros(bm.shape[1])
-    for term in query_terms:
+def bm25_score(query_indices, bm)    
+    return bm[query_indices[0:None], :].sum(axis=0) 
+
+def query2indices(query, term2index):
+    query_indices = []    
+    query_tokens = query_tokens.lower().split(' ')
+    for term in query_tokens:
         term_index = term2index[term]
-        score += bm[term_id, :]
-    return score
-
-def cosine_similarity(tf_idf, query):
-    """
-
-    :param tf_idf: tf_idf matrix where rows are terms and columns are documents
-    :param query: query representation??
-    :return: numpy array of cosine similarity per document
-    """
-    return np.einsum('ij,i->j', tf_idf, query) / np.linalg.norm(tf_idf, axis=0) * np.linalg.norm(query)
-
-
-def rank_tf_idf(tf_idf, query_indices):
-    return tf_idf[query_indices[0:None], :].sum(axis=0)  # ranking per document
-
+        query_indices.append[term_index] 
+    return query_indices
 
 def construct_tf(topics, index, max_query_terms=0, max_documents=0):
     token2id, id2token, _ = index.get_dictionary()
@@ -59,7 +45,6 @@ def construct_tf(topics, index, max_query_terms=0, max_documents=0):
 
     return tf, term2index
 
-
 def collect_query_terms(topics, token2id):
     query_term_ids = set()
     for query_id, query_tokens in topics.items():
@@ -68,3 +53,14 @@ def collect_query_terms(topics, token2id):
         query_id_tokens = [word_id for word_id in query_id_tokens if word_id > 0]
         query_term_ids |= set(query_id_tokens)
     return list(query_term_ids)
+
+
+def cosine_similarity(tf_idf, query):
+    """
+
+    :param tf_idf: tf_idf matrix where rows are terms and columns are documents
+    :param query: query representation??
+    :return: numpy array of cosine similarity per document
+    """
+    return np.einsum('ij,i->j', tf_idf, query) / np.linalg.norm(tf_idf, axis=0) * np.linalg.norm(query)
+
