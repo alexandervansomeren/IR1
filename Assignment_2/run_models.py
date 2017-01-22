@@ -27,7 +27,7 @@ def main():
         tf, term2index = models.construct_tf(topics, index, max_query_terms=0, max_documents=500)
         with open(tf_filename, "wb") as f:
             np.save(f, tf)
-        with open(term2index_filename, 'rb') as f:
+        with open(term2index_filename, 'wb') as f:
             json.dump(term2index, f)
 
     df = (tf > 0).sum(axis=1)
