@@ -4,14 +4,14 @@ import numpy as np
 def tf_idf(tf, idf):
     return (np.log(1 + tf).T * idf.T).T  # tf-idf
 
-def tf_idf_score(query_indices, tf_idf)
+def tf_idf_score(query_indices, tf_idf):
     return tf_idf[query_indices[0:None], :].sum(axis=0)
 
 def bm25(tf, idf, k, b):
     doc_normalization = tf.sum(axis=0) / float(tf.sum() / float(tf.shape[1]))
     return (((k+1) * tf) / (float(k( (1-b) + b * doc_normalization)) + tf).T * idf.T).T
 
-def bm25_score(query_indices, bm)    
+def bm25_score(query_indices, bm): 
     return bm[query_indices[0:None], :].sum(axis=0) 
 
 def query2indices(query, term2index):
