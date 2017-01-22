@@ -9,12 +9,13 @@ def tf_idf_score(query_indices, tf_idf):
 
 def bm25(tf, idf, k, b):
     doc_normalization = tf.sum(axis=0) / float(tf.sum() / float(tf.shape[1]))
-    a = ((k+1) * tf) 
-    b = (float(k( (1-b) + b * doc_normalization)) + tf).T 
-    c = a / b
-    d = (c * idf.T).T
-    return d
+    #a = ((k+1) * tf) 
+    #b = (float(k( (1-b) + b * doc_normalization)) + tf).T 
+    #c = a / b
+    #d = (c * idf.T).T
+    #return d
     #return (((k+1) * tf) / (float(k( (1-b) + b * doc_normalization)) + tf).T * idf.T).T
+    return (((k+1) * tf) / (k( (1-b) + b * doc_normalization) + tf).T * idf.T).T
 
 def bm25_score(query_indices, bm): 
     return bm[query_indices[0:None], :].sum(axis=0) 
