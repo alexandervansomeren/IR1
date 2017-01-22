@@ -25,7 +25,7 @@ def main():
         with open(tf_filename, "wb") as f:
             np.save(f, tf)
 
-    df = tf.sum(axis=1, )
+    df = tf.sum(axis=1)
 
     # Run models
     tf_idf = models.tf_idf(tf, df)

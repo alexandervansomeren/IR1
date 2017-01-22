@@ -4,7 +4,7 @@ import numpy as np
 def tf_idf(tf, df):
     if 0 in tf:
         tf += 0.001
-    n_docs = df.shape(2)
+    n_docs = df.shape[1]
     return np.log(1 + tf).T * np.log(n_docs / df.T)  # tf-idf
 
 
