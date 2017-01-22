@@ -21,7 +21,7 @@ def construct_tf(topics, index, max_query_terms=0, max_documents=0):
     token2id, id2token, _ = index.get_dictionary()
     query_terms = collect_query_terms(topics, token2id)
     if max_query_terms > 0:
-        query_terms = query_terms[0:max_query_terms]
+        query_terms = set(list(query_terms)[0:max_query_terms])
     n_docs = index.document_count()
     if max_documents > 0:
         n_docs = max_documents
