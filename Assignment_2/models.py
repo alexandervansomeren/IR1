@@ -12,7 +12,6 @@ def bm25(tf, df, k, b):
     pass
     
 
-
 def cosine_similarity(tf_idf, query):
     return np.einsum('ij,i->j', tf_idf, query) / np.linalg.norm(tf_idf, axis=0) * np.linalg.norm(query)
 
