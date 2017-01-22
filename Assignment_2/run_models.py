@@ -23,7 +23,7 @@ def main():
         with open(term2index_filename, 'r') as f:
             term2index = json.load(f)
     else:
-        tf, term2index = models.construct_tf(topics, index, max_query_terms=0, max_documents=500)
+        tf, term2index = models.construct_tf(topics, index, max_query_terms=0, max_documents=0)
         with open(tf_filename, 'wb') as f:
             np.save(f, tf)
         with open(term2index_filename, 'w') as f:
