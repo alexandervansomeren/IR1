@@ -21,13 +21,13 @@ def main():
     if os.path.isfile(tf_filename) and os.path.isfile(term2index_filename):
         with open(tf_filename, 'rb') as f:
             tf = np.load(f)
-        with open(term2index_filename, 'rb') as f:
+        with open(term2index_filename, 'r') as f:
             term2index = json.load(f)
     else:
         tf, term2index = models.construct_tf(topics, index, max_query_terms=0, max_documents=500)
-        with open(tf_filename, "wb") as f:
+        with open(tf_filename, 'wb') as f:
             np.save(f, tf)
-        with open(term2index_filename, 'wb') as f:
+        with open(term2index_filename, 'w') as f:
             json.dump(term2index, f)
 
     df = (tf > 0).sum(axis=1)
