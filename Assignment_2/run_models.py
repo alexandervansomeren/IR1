@@ -16,7 +16,6 @@ def main():
 
     tf_filename = 'tf.npy'
     term2index_filename = 'term2index.json'
-
     # Construct term frequency and document frequency
     if os.path.isfile(tf_filename) and os.path.isfile(term2index_filename):
         with open(tf_filename, 'rb') as f:
@@ -37,8 +36,12 @@ def main():
 
     # Run models
     tf_idf = models.tf_idf(tf, idf)
-    # bm25 = models.bm25(tf, df, 1.2, 0.75)
+    bm25 = models.bm25(tf, df, 1.2, 0.75)
 
+    with open('tfidf.npy', 'wb') as f:
+        np.save(f, tf_idf)
+    with open('bm25.npy', 'wb') as f:
+        np.save(f, bm25)
 
 if __name__ == "__main__":
     main()
