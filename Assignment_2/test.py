@@ -16,7 +16,7 @@ def main():
         tf_idf = np.load(f)
     with open('bm25.npy', 'rb') as f:
         bm25 = np.load(f)
-    with open(term2index_filename, 'r') as f:
+    with open('term2index.json', 'r') as f:
         term2index = json.load(f)
 
     for query_id, query in topics.items():    
