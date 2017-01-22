@@ -46,6 +46,8 @@ def write_run(model_name, data, out_f,
         - out_f: output file stream.
         - max_objects_per_query: cut-off for number of objects per query.
     """
+    f = open(out_f, "w")
+
     for subject_id, object_assesments in data.items():
         if not object_assesments:
             logging.warning('Received empty ranking for %s; ignoring.',
@@ -72,7 +74,7 @@ def write_run(model_name, data, out_f,
             if isinstance(object_id, bytes):
                 object_id = object_id.decode('utf8')
 
-            out_f.write(
+            f.write(
                 '{subject} Q0 {object} {rank} {relevance} '
                 '{model_name}\n'.format(
                     subject=subject_id,
