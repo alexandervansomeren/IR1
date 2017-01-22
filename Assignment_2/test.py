@@ -23,8 +23,8 @@ def main():
         query_indices = models.query2indices(query, term2index)
         tf_idf_score = models.tf_idf_score(tf_idf, query_indices)
         bm25_score = models.bm25_score(bm25, query_indices)
-        tf_idf_ranked = np.flip(np.argsort(tf_idf_score))
-        bm25_ranked = np.flip(np.argsort(bm25_score))
+        tf_idf_ranked = np.argsort(-tf_idf_score)
+        bm25_ranked = np.argsort(-bm25_score)
         tf_idf_top3 = tf_idf_ranked[0:3]
         bm25_top3 = bm25_ranked[0:3]
         print(query)
