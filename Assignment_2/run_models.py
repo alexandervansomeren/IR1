@@ -1,9 +1,9 @@
 import os
-
 import pyndri
 import utils
 import models
 import numpy as np
+import json
 
 
 def main():
@@ -15,15 +15,21 @@ def main():
         topics = utils.parse_topics(f_topics)
 
     tf_filename = 'tf.npy'
+    term2index_filename = 'term2index.json'
 
     # Construct term frequency and document frequency
-    if os.path.isfile(tf_filename):
+    if os.path.isfile(tf_filename) and os.path.isfile(term2index_filename):
         with open(tf_filename, 'rb') as f:
             tf = np.load(f)
+        with open(term2index_filename, 'rb') as f:
+            term2index = json.load(f)
     else:
-        tf = models.construct_tf(topics, index, max_query_terms=0, max_documents=0)
+        tf, term2index = models.construct_tf(topics, index, max_query_terms=0, max_documents=0)
         with open(tf_filename, "wb") as f:
             np.save(f, tf)
+        with open(term2index_filename, 'rb') as f:
+            json.dump(term2index, f)
+
 
     query_terms = models.collect_query_terms(topics, token2id)
     token2tf_index = {id2token[term_id]: index for index, term_id in enumerate(query_terms)}
