@@ -44,7 +44,7 @@ def main():
     del tf_idf
     del tfidf_results
     duration = time.time() - start
-    print("Finished evaluating tf_idf in " + str(duration) + " seconds (" + '%.2f' % (duration / 60) + " minutes)")
+    print("Finished evaluating tf_idf in " + '%.2f' % duration + " seconds (" + '%.2f' % (duration / 60) + " minutes)")
 
     """
     BM25
@@ -66,7 +66,7 @@ def main():
     del bm25
     del bm25_results
     duration = time.time() - start
-    print("Finished evaluating bm25 in " + str(duration) + " seconds (" + '%.2f' % (duration / 60) + " minutes)")
+    print("Finished evaluating bm25 in " + '%.2f' % duration + " seconds (" + '%.2f' % (duration / 60) + " minutes)")
 
 
 # trec_eval -m all_trec -q ap_88_89/qrel_validation ranking_tfidf.txt | grep -E "^map\s"
