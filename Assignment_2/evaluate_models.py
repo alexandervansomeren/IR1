@@ -50,7 +50,7 @@ def main():
     BM25
     """
     print("Evaluating bm25")
-
+    start = time.time()
     with open('bm25.npy', 'rb') as f:
         bm25 = np.load(f)
 
@@ -65,7 +65,8 @@ def main():
 
     del bm25
     del bm25_results
-
+    duration = time.time() - start
+    print("Finished evaluating bm25 in " + duration + ' seconds (' + str(duration / 60) + ' minutes)')
 
 # trec_eval -m all_trec -q ap_88_89/qrel_validation ranking_tfidf.txt | grep -E "^map\s"
 # trec_eval -m all_trec -q ap_88_89/qrel_validation ranking_bm25.txt | grep -E "^map\s"
