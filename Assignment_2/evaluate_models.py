@@ -1,5 +1,7 @@
 import os
 import pyndri
+import time
+
 import utils
 import models
 import numpy as np
@@ -25,6 +27,7 @@ def main():
     TF IDF
     """
     print("Evaluating tf_idf")
+    start = time.time()
     tfidf_results = {}
     with open('tfidf.npy', 'rb') as f:
         tf_idf = np.load(f)
@@ -32,7 +35,7 @@ def main():
     for query_id, query in topics.items():
         query_indices = models.query2indices(query, term2index)
         tfidf_score = models.tf_idf_score(tf_idf, query_indices)
-        print("   Score: " + str(tfidf_score) +  "   Query: " + query)
+        # print("   Score: " + str(tfidf_score) + "   Query: " + query)
         tfidf_results[query_id] = list(zip(tfidf_score, doc_names))
 
     utils.write_run(model_name='tfidf', data=tfidf_results,
@@ -40,14 +43,17 @@ def main():
 
     del tf_idf
     del tfidf_results
-
-    with open('bm25.npy', 'rb') as f:
-        bm25 = np.load(f)
+    duration = time.time()-start
+    print("Finished evaluating tf_idf in " + duration + ' seconds (' + str(duration/60) + ' minutes)')
 
     """
     BM25
     """
     print("Evaluating bm25")
+
+    with open('bm25.npy', 'rb') as f:
+        bm25 = np.load(f)
+
     bm25_results = {}
     for query_id, query in topics.items():
         query_indices = models.query2indices(query, term2index)
@@ -57,8 +63,8 @@ def main():
     utils.write_run(model_name='bm25', data=bm25_results,
                     out_f='results/ranking_bm25.txt', max_objects_per_query=1000)
 
-    del tf_idf
-    del tfidf_results
+    del bm25
+    del bm25_results
 
 
 # trec_eval -m all_trec -q ap_88_89/qrel_validation ranking_tfidf.txt | grep -E "^map\s"
