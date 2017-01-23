@@ -19,5 +19,4 @@ for trec_result_file in glob.glob('./trec_results/*.txt'):
         results.append(df.copy())
 
 results = pd.concat(results, axis=1)
-with open('results.pickle', 'wb') as f:
-    pickle.dump(results, f)
+results.to_csv('results_task1.csv')
