@@ -19,5 +19,5 @@ for trec_result_file in glob.glob('./trec_results/*.txt'):
         results.append(df.copy())
 
 results = pd.concat(results, axis=1)
-print results
+print(results)
 results.to_csv('results_task1.csv')
