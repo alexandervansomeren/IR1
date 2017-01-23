@@ -38,7 +38,7 @@ def main():
 
     utils.write_run(model_name='tfidf', data=tfidf_results, 
                     out_f='ranking_tfidf.txt', max_objects_per_query=1000)
-    utils.write_run(model_name='bm25', data=tfidf_results, 
+    utils.write_run(model_name='bm25', data=bm25_results,
                     out_f='ranking_bm25.txt', max_objects_per_query=1000)
 
 # trec_eval -m all_trec -q ap_88_89/qrel_validation ranking_tfidf.txt | grep -E "^map\s"
