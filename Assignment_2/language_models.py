@@ -34,3 +34,7 @@ def absolute_discounting(tf, delta):
     d_length = tf.sum(axis=0, dtype=float)
     return np.nan_to_num((tf - delta).clip(0) / d_length) + np.outer(((tf.sum(axis=1)) / tf.sum()),
                                                                      ((delta * tf > 0).sum(axis=0) / d_length))
+
+
+def score_model(model, query_indices):
+    return model[query_indices[0:None], :].sum(axis=0)
