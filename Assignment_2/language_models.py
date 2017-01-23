@@ -20,7 +20,7 @@ def dirichlet_prior_smoothing(tf, mu):
     :param mu:
     :return:
     """
-    return (tf.T + mu * (tf.sum(axis=1)).T / tf.sum()) / (tf.sum(axis=0) + mu)
+    return (tf.T + mu * (tf.sum(axis=1)) / tf.sum()).T / (tf.sum(axis=0) + mu)
 
 
 def absolute_discounting(tf, delta):
@@ -33,7 +33,7 @@ def absolute_discounting(tf, delta):
     """
     d_length = tf.sum(axis=0, dtype=float)
     return np.nan_to_num((tf - delta).clip(0) / d_length) + np.outer(((tf.sum(axis=1)) / tf.sum()),
-                                                                     ((delta * tf > 0).sum(axis=0) / d_length))
+                                                                     (delta * ((tf > 0).sum(axis=0)) / d_length))
 
 
 def score_model(model, query_indices):

@@ -75,21 +75,21 @@ def main():
     with open('tf.npy', 'rb') as f:
         tf = np.load(f)
 
-    # jelinek_mercer_smoothing
-    print("Evaluating jelinek_mercer_smoothing")
-    start = time.time()
-    results = {}
-    for lamda in np.linspace(0.1, 0.9, 9):  # [0.1, 0.2 ... 0.9]
-        for query_id, query in topics.items():
-            query_indices = models.query2indices(query, term2index)
-            score = language_models.score_model(language_models.jelinek_mercer_smoothing(tf, lamda), query_indices)
-            results[query_id] = list(zip(score, doc_names))
-        model_name = 'jms' + str(lamda)
-        utils.write_run(model_name=model_name, data=results,
-                        out_f='results/ranking_' + model_name + '.txt', max_objects_per_query=1000)
-    duration = time.time() - start
-    print("Finished evaluating jelinek_mercer_smoothing in " + '%.2f' % duration + " seconds (" + '%.2f' % (
-        duration / 60) + " minutes)")
+    # # jelinek_mercer_smoothing
+    # print("Evaluating jelinek_mercer_smoothing")
+    # start = time.time()
+    # results = {}
+    # for lamda in np.linspace(0.1, 0.9, 9):  # [0.1, 0.2 ... 0.9]
+    #     for query_id, query in topics.items():
+    #         query_indices = models.query2indices(query, term2index)
+    #         score = language_models.score_model(language_models.jelinek_mercer_smoothing(tf, lamda), query_indices)
+    #         results[query_id] = list(zip(score, doc_names))
+    #     model_name = 'jms' + str(lamda)
+    #     utils.write_run(model_name=model_name, data=results,
+    #                     out_f='results/ranking_' + model_name + '.txt', max_objects_per_query=1000)
+    # duration = time.time() - start
+    # print("Finished evaluating jelinek_mercer_smoothing in " + '%.2f' % duration + " seconds (" + '%.2f' % (
+    #     duration / 60) + " minutes)")
 
     # dirichlet_prior_smoothing
     print("Evaluating dirichlet_prior_smoothing")
