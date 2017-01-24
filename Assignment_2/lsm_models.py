@@ -26,7 +26,7 @@ def word2vec_model(index):
     dictionary = pyndri.extract_dictionary(index)
     sentences = connector_classes.IndriSentences(index, dictionary)
 
-    logging.info('Constructing word2vec vocabulary.'
+    logging.info('Constructing word2vec vocabulary.')
 
     # Build vocab.
     word2vec_init.build_vocab(sentences, trim_rule=None)
