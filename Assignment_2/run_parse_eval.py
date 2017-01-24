@@ -6,13 +6,13 @@ import pandas as pd
 for result_file in glob.glob('./results/*.txt'):
     print("Processing" + result_file)
     subprocess.call(
-        'trec_eval -m all_trec -q ap_88_89/qrel_test '
-        + result_file + ' | grep -E "(^ndcg_cut_10)|(^P_5)|(^recall_1000)|(^map_cut_1000)" > ./trec_results/' +
+        'trec_eval -m all_trec -q ap_88_89/qrel_validation '
+        + result_file + ' | grep -E "(^ndcg_cut_10)|(^P_5)|(^recall_1000)|(^map_cut_1000)" > ./trec_results_validation/' +
         result_file.split('/')[-1], shell=True)
 
 results = []
 
-for trec_result_file in glob.glob('./trec_results/*.txt'):
+for trec_result_file in glob.glob('./trec_results_validation/*.txt'):
     with open(trec_result_file, 'r') as f:
         df = pd.read_csv(trec_result_file, header=None, delimiter=r"\s+")
         df = df.pivot(index=1, columns=0, values=2)

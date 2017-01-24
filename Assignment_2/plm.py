@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def construct_tf(topics, index, max_query_terms=0, max_documents=0):
+def construct_positional_tf(topics, index, max_query_terms=0, max_documents=0):
     token2id, id2token, _ = index.get_dictionary()
     query_term_ids = collect_query_terms(topics, token2id)
 
