@@ -1,5 +1,6 @@
 import pyndri
 import gensim
+import utils
 import lsm_models
 
 def main():
