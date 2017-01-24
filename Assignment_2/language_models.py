@@ -5,12 +5,12 @@ def jelinek_mercer_smoothing(tf, lamda):
     """
 
     :param tf: Term-Frequency matrix
-    :param lamda: parameter that determines the amount of contribution of the document vs the collection
+    :param lambda: parameter that determines the amount of contribution of the document vs the collection
     :return: Jelinek Mercer smoothed matrix
     """
     np.seterr(divide='ignore', invalid='ignore')
-    return np.log(
-        (np.nan_to_num(lamda * tf / tf.sum(axis=0, dtype=float)).T + (1 - lamda) * tf.sum(axis=1) / tf.sum()).T)
+    return np.log((np.nan_to_num(lamda * tf / tf.sum(axis=0, dtype=float)).T + (1 - lamda) * tf.sum(axis=1) / tf.sum(dtype=float)).T)
+
 
 
 def dirichlet_prior_smoothing(tf, mu):

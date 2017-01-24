@@ -9,11 +9,11 @@ def tf_idf(tf, idf):
 def tf_idf_score(tf_idf, query_indices):
     return tf_idf[query_indices[0:None], :].sum(axis=0)
 
-
-def tf_idf_score_cosine(tf_idf, query_indices, df):
+def tf_idf_score_cosine(tf_idf, query_indices, idf):
     query_counts_per_index = Counter(query_indices)
     query_tf = np.array(query_counts_per_index.values())
-    query_tf_idf = np.log(1+query_tf) * (float(tf_idf.shape[1]) / df[query_counts_per_index.keys()[0:None], :])
+    query_tf_idf = (np.log(1 + query_tf).T * idf[query_counts_per_index.keys()[0:None], :].T).T
+    #query_tf_idf = np.log(1+query_tf) * (float(tf_idf.shape[1]) / idf[query_counts_per_index.keys()[0:None], :])
     return cosine_similarity(tf_idf[query_counts_per_index.keys()[0:None], :], query_tf_idf)
 
 
@@ -21,7 +21,6 @@ def bm25(tf, idf, k, b):
     doc_normalization = np.divide(np.sum(tf, axis=0), np.average(np.sum(tf, axis=0)))
     # return (np.divide(((k+1) * tf), (k * ((1-b) + b * doc_normalization) + tf)).T * idf.T).T
     return (np.divide(((k + 1) * tf), (k * ((1 - b) + b * doc_normalization) + tf)).T * idf.T).T
-
 
 def bm25_score(bm25, query_indices):
     return bm25[query_indices[0:None], :].sum(axis=0)
