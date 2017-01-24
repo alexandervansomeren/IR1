@@ -80,13 +80,18 @@ def main():
     start = time.time()
     results = {}
     for lamda in np.linspace(0.1, 0.9, 9):  # [0.1, 0.2 ... 0.9]
-        for query_id, query in topics.items():
-            query_indices = models.query2indices(query, term2index)
-            score = language_models.score_model(language_models.jelinek_mercer_smoothing(tf, lamda), query_indices)
-            results[query_id] = list(zip(score, doc_names))
+        model = language_models.jelinek_mercer_smoothing(tf, lamda)
         model_name = 'jms' + str(lamda)
-        utils.write_run(model_name=model_name, data=results,
-                        out_f='results/ranking_' + model_name + '.txt', max_objects_per_query=1000)
+        if not os.path.exists('results/ranking_' + model_name + '.txt'):
+            for query_id, query in topics.items():
+                query_indices = models.query2indices(query, term2index)
+                score = language_models.score_model(model, query_indices)
+                results[query_id] = list(zip(score, doc_names))
+            model_name = 'jms' + str(lamda)
+            utils.write_run(model_name=model_name, data=results,
+                            out_f='results/ranking_' + model_name + '.txt', max_objects_per_query=1000)
+        else:
+            print(model_name + " already processed...")
     duration = time.time() - start
     print("Finished evaluating jelinek_mercer_smoothing in " + '%.2f' % duration + " seconds (" + '%.2f' % (
         duration / 60) + " minutes)")
@@ -96,13 +101,17 @@ def main():
     start = time.time()
     results = {}
     for mu in np.linspace(500, 2000, 4):  # [500, 1000 ... 2000]
-        for query_id, query in topics.items():
-            query_indices = models.query2indices(query, term2index)
-            score = language_models.score_model(language_models.dirichlet_prior_smoothing(tf, mu), query_indices)
-            results[query_id] = list(zip(score, doc_names))
+        model = language_models.dirichlet_prior_smoothing(tf, mu)
         model_name = 'dps' + str(mu)
-        utils.write_run(model_name=model_name, data=results,
-                        out_f='results/ranking_' + model_name + '.txt', max_objects_per_query=1000)
+        if not os.path.exists('results/ranking_' + model_name + '.txt'):
+            for query_id, query in topics.items():
+                query_indices = models.query2indices(query, term2index)
+                score = language_models.score_model(model, query_indices)
+                results[query_id] = list(zip(score, doc_names))
+            utils.write_run(model_name=model_name, data=results,
+                            out_f='results/ranking_' + model_name + '.txt', max_objects_per_query=1000)
+        else:
+            print(model_name + " already processed...")
     duration = time.time() - start
     print("Finished evaluating dirichlet_prior_smoothing in " + '%.2f' % duration + " seconds (" + '%.2f' % (
         duration / 60) + " minutes)")
@@ -112,13 +121,17 @@ def main():
     start = time.time()
     results = {}
     for delta in np.linspace(0.1, 0.9, 9):  # [0.1, 0.2 ... 0.9]
-        for query_id, query in topics.items():
-            query_indices = models.query2indices(query, term2index)
-            score = language_models.score_model(language_models.absolute_discounting(tf, delta), query_indices)
-            results[query_id] = list(zip(score, doc_names))
+        model = language_models.absolute_discounting(tf, delta)
         model_name = 'ad' + str(delta)
-        utils.write_run(model_name=model_name, data=results,
-                        out_f='results/ranking_' + model_name + '.txt', max_objects_per_query=1000)
+        if not os.path.exists('results/ranking_' + model_name + '.txt'):
+            for query_id, query in topics.items():
+                query_indices = models.query2indices(query, term2index)
+                score = language_models.score_model(model, query_indices)
+                results[query_id] = list(zip(score, doc_names))
+            utils.write_run(model_name=model_name, data=results,
+                            out_f='results/ranking_' + model_name + '.txt', max_objects_per_query=1000)
+        else:
+            print(model_name + " already processed...")
     duration = time.time() - start
     print("Finished evaluating absolute_discounting in " + '%.2f' % duration + " seconds (" + '%.2f' % (
         duration / 60) + " minutes)")

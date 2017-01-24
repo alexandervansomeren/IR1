@@ -9,7 +9,8 @@ def jelinek_mercer_smoothing(tf, lamda):
     :return: Jelinek Mercer smoothed matrix
     """
     np.seterr(divide='ignore', invalid='ignore')
-    return np.log((np.nan_to_num(lamda * tf / tf.sum(axis=0, dtype=float)).T + (1 - lamda) * tf.sum(axis=1) / tf.sum()).T)
+    return np.log(
+        (np.nan_to_num(lamda * tf / tf.sum(axis=0, dtype=float)).T + (1 - lamda) * tf.sum(axis=1) / tf.sum()).T)
 
 
 def dirichlet_prior_smoothing(tf, mu):
@@ -33,7 +34,8 @@ def absolute_discounting(tf, delta):
     """
     d_length = tf.sum(axis=0, dtype=float)
     return np.log(np.nan_to_num((tf - delta).clip(0) / d_length) + np.outer(((tf.sum(axis=1)) / tf.sum()),
-                                                                     (delta * ((tf > 0).sum(axis=0)) / d_length)))
+                                                                            (
+                                                                            delta * ((tf > 0).sum(axis=0)) / d_length)))
 
 
 def score_model(model, query_indices):
