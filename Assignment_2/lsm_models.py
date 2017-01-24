@@ -60,7 +60,7 @@ def lsi_model(index):
     ### TODO arguments
     corpus = connector_classes.IndriCorpus(index, dictionary)
 
-    logging.info('Constructing word2vec vocabulary.'
+    logging.info('Constructing word2vec vocabulary.')
 
     # Add documents
     lsi_init.add_documents(corpus)
