@@ -10,7 +10,7 @@ def main():
     # Get documents
     index = pyndri.Index('index/')
     token2id, id2token, _ = index.get_dictionary()
-    doc_names = utils.get_documents_names(index)
+    doc_names = utils.get_document_names(index)
 
     # Get queries
     with open('./ap_88_89/topics_title', 'r') as f_topics:
