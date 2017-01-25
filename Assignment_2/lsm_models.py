@@ -32,6 +32,7 @@ class Word2Vec():
                                                      max_documents=self.max_documents)
         self.model.build_vocab(sentences, trim_rule=None)
         self.model.train(sentences)
+        self.model.save('models/word2vec.model')
     
     def docs2vec(self, index):
         _, id2token, _ = index.get_dictionary()        
