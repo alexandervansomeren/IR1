@@ -38,7 +38,7 @@ class IndriCorpus(gensim.interfaces.CorpusABC):
     def __init__(self, index, dictionary, max_documents=None):
         assert isinstance(index, pyndri.Index)
 
-        self.input = index
+        self.index = index
         self.dictionary = dictionary
         self.max_documents = max_documents
 
