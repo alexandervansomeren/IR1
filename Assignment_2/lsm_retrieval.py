@@ -19,8 +19,8 @@ def main():
     initialize_folders()
 
     print("Building / loading word2vec")
-    embedding_size = 100
-    max_documents = 2000
+    embedding_size = 300
+    max_documents = index.maximum_document()
     wv2_model_filename = 'models/word2vec.model'    
     if os.path.isfile(wv2_model_filename):
         w2v = lsm_models.Word2Vec(filename=wv2_model_filename,
@@ -62,12 +62,12 @@ def main():
         w2v_score = utils.cosine_similarity(query_representation, docs_representation)
         w2v_results[query_id] = list(zip(w2v_score, doc_names))
 
-        print(query)
-        top_doc = index.document(np.argmax(w2v_score)+1)[1]
-        line = str(' ')
-        for word_id in top_doc:
-            line = line + str(id2token.get(word_id,0)) + ' '
-        print(line)
+        #print(query)
+        #top_doc = index.document(np.argmax(w2v_score)+1)[1]
+        #line = str(' ')
+        #for word_id in top_doc:
+        #    line = line + str(id2token.get(word_id,0)) + ' '
+        #print(line)
 
     utils.write_run(model_name='w2v', data=w2v_results, 
                     out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
