@@ -49,7 +49,7 @@ class Word2Vec():
     # Build query representation as average of wordvectors
     def query2vec(self, query):
         query_tokens = query.lower().split(' ')
-        query_tokens = [word for word in query_tokens if word in model.vocab]
+        query_tokens = [word for word in query_tokens if word in self.model.wv.vocab]
         wordvec = np.zeros([self.embedding_size, len(query_tokens)])
         for i, word in enumerate(query_tokens):
             wordvec[:,i] = self.model[word]
