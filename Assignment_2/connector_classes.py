@@ -1,5 +1,6 @@
 import gensim
 import pyndri
+from itertools import Counter
 
 class IndriSentences(gensim.interfaces.CorpusABC):
     """Integrates an Index with Gensim's word2vec implementation."""
