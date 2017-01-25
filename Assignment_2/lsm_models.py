@@ -41,7 +41,7 @@ class Word2Vec():
         for d in range(self.max_documents):#index.maximum_document()):
             doc = index.document(d+1)[1]
             doc_words = [id2token.get(word_id) for word_id in doc if word_id != 0]
-            doc_words = [word for word in doc_words if index.term_count(word) >= 5)]
+            doc_words = [word for word in doc_words if index.term_count(word) >= 5]
             docvec = np.zeros([self.embedding_size, len(doc_words)])
             for i, word in enumerate(doc_words):
                 docvec[:,i] = self.model[word]
