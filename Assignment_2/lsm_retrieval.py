@@ -21,7 +21,7 @@ def main():
     doc_representations = np.zeros([embedding_size, index.document_count()])        
     for d in range(index.document_base(), index.maximum_document()):
         doc_tokens = index.document(i)[1]
-        docvec = np.zeros([embedding_size], len(doc_tokens)])
+        docvec = np.zeros([embedding_size, len(doc_tokens)])
         for i, token in enumerate(doc_tokens):
             word = token2id.get(token,0)
             docvec[:,i] = model[word]
