@@ -81,7 +81,7 @@ def lsi_run(index, doc_names, topics, num_topics):
 
     # Save results to file
     #utils.write_run(model_name='w2v', data=w2v_results, 
-                    out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
+    #                out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
 
 
 
