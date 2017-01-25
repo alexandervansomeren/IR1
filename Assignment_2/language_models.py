@@ -3,7 +3,7 @@ import numpy as np
 
 def jelinek_mercer_smoothing(tf, lamda):
     """
-
+    Uses document length for terms that appear in one of the queries only
     :param tf: Term-Frequency matrix
     :param lambda: parameter that determines the amount of contribution of the document vs the collection
     :return: Jelinek Mercer smoothed matrix
