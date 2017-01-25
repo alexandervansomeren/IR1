@@ -60,18 +60,16 @@ class Word2Vec():
 
 class LSI():
 
-    def __init__(self, filename=None, num_topics=50):
+    def __init__(self, filename=None, corpus=None, num_topics=50):
         if filename == None:
             self.model = gensim.models.LsiModel(
+                corpus = corpus,
                 num_topics=num_topics) # Latent dimensions
         else:
             self.model = gensim.models.LsiModel.load(filename)
 
-    def train(self, index):
-        dictionary = pyndri.extract_dictionary(index)
-        corpus = connector_classes.IndriCorpus(index, dictionary) 
-        model.add_documents(corpus)
-        model.save('models/lsi.model')
+    def save(self):
+        self.model.save('models/lsi.model')
     
 
 #class LDA():

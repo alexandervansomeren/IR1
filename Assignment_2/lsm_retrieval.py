@@ -58,13 +58,17 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
 def run_lsi(index, doc_names, topics, num_topics):
     
     print("Building / loading LSI")
+    dictionary = pyndri.extract_dictionary(index)
+    corpus = connector_classes.IndriCorpus(index, dictionary) 
     lsi_model_filename = 'models/lsi.model'    
     if os.path.isfile(lsi_model_filename):
         lsi = lsm_models.LSI(filename=lsi_model_filename,
                              num_topics=num_topics)
     else:
-        lsi = lsm_models.LSI(num_topics=num_topics) 
-        lsi.train(index)
+        lsi = lsm_models.LSI(corpus=corpus,
+                             index=index,
+                             dictionary=dictionary,
+                             num_topics=num_topics)
 
     #print('Size Word2Vec model')
     #print(len(w2v.model.wv.vocab))
