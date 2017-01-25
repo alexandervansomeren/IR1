@@ -69,7 +69,6 @@ class LSI():
 
     def train(self, index):
         dictionary = pyndri.extract_dictionary(index)
-        # TODO make this work
         corpus = connector_classes.IndriCorpus(index, dictionary) 
         model.add_documents(corpus)
         model.save('models/lsi.model')
