@@ -130,6 +130,8 @@ def main():
         run_w2v(index, doc_names, topics, 300, index.document_count())
     elif FLAGS.method == 'lsi':
         run_lsi(index, doc_names, topics, 20)
+    elif FLAGS.method == 'lda':
+        run_lda(index, doc_names, topics, 20)
 
 
 if __name__ == "__main__":
