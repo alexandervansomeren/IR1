@@ -20,7 +20,7 @@ def main():
 
     print("Building / loading word2vec")
     embedding_size = 300
-    max_documents = index.maximum_document()
+    max_documents = index.document_count()
     wv2_model_filename = 'models/word2vec.model'    
     if os.path.isfile(wv2_model_filename):
         w2v = lsm_models.Word2Vec(filename=wv2_model_filename,
