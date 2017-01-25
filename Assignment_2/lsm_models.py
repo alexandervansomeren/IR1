@@ -5,12 +5,12 @@ import pyndri
 import sys
 import connector_classes
 
-def word2vec_model(index):
+def word2vec_model(index, embedding_size=300):
     logging.basicConfig(level=logging.INFO)
     logging.info('Initializing word2vec.')
 
-    word2vec_init = gensim.models.Word2Vec(
-        size=50, #300,  # Embedding size
+    model = gensim.models.Word2Vec(
+        size=embedding_size,  # Embedding size
         window=5,  # One-sided window size
         sg=True,  # Skip-gram. (False for CBOW)
         min_count=5,  # Minimum word frequency.
@@ -29,28 +29,32 @@ def word2vec_model(index):
     logging.info('Constructing word2vec vocabulary.')
 
     # Build vocab.
-    word2vec_init.build_vocab(sentences, trim_rule=None)
+    model.build_vocab(sentences, trim_rule=None)
+    model.train(sentences)
 
-    models = [word2vec_init]
+    # If you're finished training a model (=no more updates, only querying)
+    # model.init_sims(replace=True)
 
-    for epoch in range(1, 5 + 1):
-        logging.info('Epoch %d', epoch)
+#     models = [word2vec_init]
+# 
+#     for epoch in range(1, 5 + 1):
+#         logging.info('Epoch %d', epoch)
+# 
+#         model = copy.deepcopy(models[-1])
+#         model.train(sentences)
+# 
+#         models.append(model)
+# 
+#     logging.info('Trained models: %s', models)
 
-        model = copy.deepcopy(models[-1])
-        model.train(sentences)
-
-        models.append(model)
-
-    logging.info('Trained models: %s', models)
-
-    return models
+    return model
 
 
 def lsi_model(index):
     logging.basicConfig(level=logging.INFO)
     logging.info('Initializing LSI.')
 
-    lsi_init = gensim.models.LsiModel(num_topics=50) #200,  # Latent dimensions
+    model = gensim.models.LsiModel(num_topics=50) #200,  # Latent dimensions
 
     logging.info('Loading vocabulary.')    
 
@@ -63,19 +67,7 @@ def lsi_model(index):
     logging.info('Constructing word2vec vocabulary.')
 
     # Add documents
-    lsi_init.add_documents(corpus)
+    model.add_documents(corpus)
+    model.train(corpus)
 
-    ### TODO ???????
-    models = [lsi_init]
-
-    for epoch in range(1, 5 + 1):
-        logging.info('Epoch %d', epoch)
-
-        model = copy.deepcopy(models[-1])
-        model.train(corpus)
-
-        models.append(model)
-
-    logging.info('Trained models: %s', models)
-
-    return models
+    return model
