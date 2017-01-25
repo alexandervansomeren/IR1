@@ -27,7 +27,8 @@ def main():
                                   embedding_size=embedding_size,
                                   max_documents=max_documents)
     else:
-        w2v = lsm_models.Word2Vec() 
+        w2v = lsm_models.Word2Vec(embedding_size=embedding_size,
+                                  max_documents=max_documents) 
         w2v.train(index)
     #w2v_model = lsm_models.word2vec_model(index, embedding_size)
     #w2v_model = gensim.models.Word2Vec.load('models/word2vec.model')
