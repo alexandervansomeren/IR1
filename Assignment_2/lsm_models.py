@@ -3,6 +3,7 @@ import gensim
 import logging
 import pyndri
 import sys
+import numpy as np
 import connector_classes
 
 
