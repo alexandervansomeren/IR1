@@ -68,6 +68,7 @@ def run_lsi(index, doc_names, topics, num_topics):
     else:
         lsi = lsm_models.LSI(corpus=corpus,
                              num_topics=num_topics)
+        lsi.save(lsi_model_filename)
 
     #print('Size Word2Vec model')
     #print(len(w2v.model.wv.vocab))

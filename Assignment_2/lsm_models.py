@@ -68,8 +68,8 @@ class LSI():
         else:
             self.model = gensim.models.LsiModel.load(filename)
 
-    def save(self):
-        self.model.save('models/lsi.model')
+    def save(self, filename='models/lsi.model'):
+        self.model.save(filename)
     
 
 #class LDA():
