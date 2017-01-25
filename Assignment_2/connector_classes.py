@@ -67,7 +67,7 @@ class IndriCorpus(gensim.interfaces.CorpusABC):
             doc = self.index.document(int_doc_id)[1]            
 
             bow = [(word_id,count) for word_id,count in dict(Counter(doc)).items() if word_id!= 0]
-            yield sorted(bow.items())
+            yield sorted(bow)
            
             #yield self.dictionary.doc2bow(doc, allow_update=False)
 
