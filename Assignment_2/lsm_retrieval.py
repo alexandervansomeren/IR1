@@ -27,7 +27,7 @@ def main():
         doc = index.document(d)[1]
         docvec = np.zeros([embedding_size, len(doc)])
         for i, word_id in enumerate(doc):
-            word = id2token.get(word_id,0)
+            word = id2token.get(word_id)
             docvec[:,i] = model[word]
         doc_representations[:,d] = np.mean(docvec, axis=1)
 
