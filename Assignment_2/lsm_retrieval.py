@@ -70,9 +70,6 @@ def run_lsi(index, doc_names, topics, num_topics):
                              num_topics=num_topics)
         lsi.save(lsi_model_filename)
 
-    #print('Size Word2Vec model')
-    #print(len(w2v.model.wv.vocab))
-
     print("Scoring documents")
     lsi_results = {}
     #for query_id, query in topics.items():
@@ -88,6 +85,22 @@ def run_lsi(index, doc_names, topics, num_topics):
     #                out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
 
 
+def run_lda(index, doc_names, topics, num_topics):
+    
+    print("Building / loading LDA")
+    dictionary = pyndri.extract_dictionary(index)
+    corpus = connector_classes.IndriCorpus(index, dictionary) 
+    lda_model_filename = 'models/lda.model'    
+    if os.path.isfile(lda_model_filename):
+        lda = lsm_models.LDA(filename=lda_model_filename,
+                             num_topics=num_topics)
+    else:
+        lda = lsm_models.LDA(corpus=corpus,
+                             num_topics=num_topics)
+        lda.save(ldi_model_filename)
+
+    print("Scoring documents")
+    lda_results = {}
 
 def initialize_folders():
     if not os.path.exists('models'):

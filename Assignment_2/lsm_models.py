@@ -71,8 +71,19 @@ class LSI():
     def save(self, filename='models/lsi.model'):
         self.model.save(filename)
     
+class LDA():
 
-#class LDA():
+    def __init__(self, filename=None, corpus=None, num_topics=50):
+        if filename == None:
+            self.model = gensim.models.LdaModel(
+                corpus = corpus,
+                num_topics=num_topics) # Latent dimensions
+        else:
+            self.model = gensim.models.LdaModel.load(filename)
+
+    def save(self, filename='models/lda.model'):
+        self.model.save(filename)
+
 
 
     # If you're finished training a model (=no more updates, only querying)
