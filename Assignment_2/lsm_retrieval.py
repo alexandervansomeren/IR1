@@ -67,7 +67,6 @@ def main():
         for word_id in top_doc:
             line = line + str(id2token.get(word_id,0)) + ' '
         print(line)
-        word2vec_results[query_id] = similarity
 
     utils.write_run(model_name='w2v', data=w2v_results, 
                     out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
