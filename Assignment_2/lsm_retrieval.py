@@ -62,7 +62,7 @@ def main():
         w2v_results[query_id] = list(zip(w2v_score, doc_names))
 
         print(query)
-        top_doc = index.document(np.argmax(similarity)+1)[1]
+        top_doc = index.document(np.argmax(w2v_score)+1)[1]
         line = str(' ')
         for word_id in top_doc:
             line = line + id2token[word_id] + ' '
