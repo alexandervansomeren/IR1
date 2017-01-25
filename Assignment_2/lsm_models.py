@@ -5,6 +5,28 @@ import pyndri
 import sys
 import connector_classes
 
+
+class Word2Vec():
+
+    def __init__(self, embedding_size=300):
+        self.model = gensim.models.Word2Vec(
+            size=embedding_size,  # Embedding size
+            window=5,  # One-sided window size
+            sg=True,  # Skip-gram. (False for CBOW)
+            min_count=5,  # Minimum word frequency.
+            sample=1e-3,  # Sub-sample threshold.
+            hs=False,  # Hierarchical softmax.
+            negative=10,  # Number of negative examples.
+            iter=1,  # Number of iterations.
+            workers=8)  # Number of workers.
+
+    def train(self, index):  
+        dictionary = pyndri.extract_dictionary(index)
+        sentences = connector_classes.IndriSentences(index, dictionary)
+        self.model.build_vocab(sentences, trim_rule=None)
+        self.model.train(sentences)
+
+
 def word2vec_model(index, embedding_size=300):
     logging.basicConfig(level=logging.INFO)
     logging.info('Initializing word2vec.')
@@ -31,6 +53,7 @@ def word2vec_model(index, embedding_size=300):
     # Build vocab.
     model.build_vocab(sentences, trim_rule=None)
     model.train(sentences)
+    model.save('models/word2vec.model')
 
     # If you're finished training a model (=no more updates, only querying)
     # model.init_sims(replace=True)
