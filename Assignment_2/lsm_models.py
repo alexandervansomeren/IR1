@@ -17,7 +17,7 @@ class Word2Vec():
                 size=self.embedding_size,  # Embedding size
                 window=5,  # One-sided window size
                 sg=True,  # Skip-gram. (False for CBOW)
-                min_count=5,  # Minimum word frequency.
+                min_count=1,  # Minimum word frequency.
                 sample=1e-3,  # Sub-sample threshold.
                 hs=False,  # Hierarchical softmax.
                 negative=10,  # Number of negative examples.
@@ -35,11 +35,13 @@ class Word2Vec():
     
     def docs2vec(self, index):
         #docs_representation = np.zeros([embedding_size, index.document_count()])
-        _, id2token, _ = index.get_dictionary()    
+        _, id2token, _ = index.get_dictionary()  
+        index.get_term_frequencies
         docs_representation = np.zeros([self.embedding_size,self.max_documents])   
         for d in range(self.max_documents):#index.maximum_document()):
             doc = index.document(d+1)[1]
-            doc_words = list((id2token.get(word_id) for word_id in doc if word_id != 0))
+            doc_words = [id2token.get(word_id) for word_id in doc if word_id != 0]
+            doc_words = [word for word in doc_words if index.term_count(word) >= 5)]
             docvec = np.zeros([self.embedding_size, len(doc_words)])
             for i, word in enumerate(doc_words):
                 docvec[:,i] = self.model[word]
