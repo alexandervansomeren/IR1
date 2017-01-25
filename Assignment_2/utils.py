@@ -2,6 +2,7 @@ import collections
 import io
 import logging
 import sys
+import numpy as np
 
 def parse_topics(f,
                  max_topics=sys.maxsize, delimiter=';'):
