@@ -16,7 +16,7 @@ for trec_result_file in glob.glob('./trec_results_test/*.txt'):
     with open(trec_result_file, 'r') as f:
         df = pd.read_csv(trec_result_file, header=None, delimiter=r"\s+")
         df = df.pivot(index=1, columns=0, values=2)
-        df = df[['ndcg_cut_10', 'map_cut_1000', 'P_5', 'recall_1000', 'word2vec']]
+        df = df[['ndcg_cut_10', 'map_cut_1000', 'P_5', 'recall_1000', 'w2v']]
         model_name = trec_result_file.split('_')[-1][0:-4] + '_'
         df.columns = [model_name + col_name for col_name in df.columns]
         results.append(df.copy())
