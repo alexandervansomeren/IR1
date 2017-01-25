@@ -31,7 +31,7 @@ def main():
     #w2v_model = lsm_models.word2vec_model(index, embedding_size)
     #w2v_model = gensim.models.Word2Vec.load('models/word2vec.model')
     print('Size Word2Vec model')
-    print(len(w2v.model))
+    print(len(w2v.model.vocab))
    
     print("Building document representations")
     docs_representation_filename = 'tmp/doc2vecs.npy'
