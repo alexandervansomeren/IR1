@@ -34,9 +34,7 @@ class Word2Vec():
         self.model.train(sentences)
     
     def docs2vec(self, index):
-        #docs_representation = np.zeros([embedding_size, index.document_count()])
-        _, id2token, _ = index.get_dictionary()  
-        index.get_term_frequencies
+        _, id2token, _ = index.get_dictionary()        
         docs_representation = np.zeros([self.embedding_size,self.max_documents])   
         for d in range(self.max_documents):#index.maximum_document()):
             doc = index.document(d+1)[1]
@@ -51,6 +49,7 @@ class Word2Vec():
     # Build query representation as average of wordvectors
     def query2vec(self, query):
         query_tokens = query.lower().split(' ')
+        query_tokens = [word for word in query_tokens if word in model.vocab]
         wordvec = np.zeros([self.embedding_size, len(query_tokens)])
         for i, word in enumerate(query_tokens):
             wordvec[:,i] = self.model[word]

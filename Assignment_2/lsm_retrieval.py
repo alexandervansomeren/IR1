@@ -40,7 +40,7 @@ def main():
         with open(docs_representation_filename, 'rb') as f:
             docs_representation = np.load(f)
     else:
-        docs_representation = w2v.docs2vec(index)
+        docs_representation = w2v.docs2vec(index, id2token)
         with open(docs_representation_filename, 'wb') as f:
             np.save(f, docs_representation)
 #     doc_representations = np.zeros([embedding_size, index.document_count()])        
@@ -56,7 +56,7 @@ def main():
     w2v_results = {}
     for query_id, query in topics.items():
         # Get query word2vec representation
-        query_representation = w2v.query2vec(query)
+        query_representation = w2v.query2vec(query, id2token)
         # Calculate the similarity with documents
         w2v_score = utils.cosine_similarity(query_representation, docs_representation)
         w2v_results[query_id] = list(zip(w2v_score, doc_names))
