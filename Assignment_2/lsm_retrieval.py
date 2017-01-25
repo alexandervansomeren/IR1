@@ -34,7 +34,7 @@ def main():
     print(len(w2v.model))
    
     print("Building document representations")
-    docs_representation_filename = 'tmp/doc2vecs.npy')
+    docs_representation_filename = 'tmp/doc2vecs.npy'
     if os.path.isfile(docs_representation_filename):
         docs_representation = w2v.docs2vec(index)
         with open(docs_representation_filename, 'wb') as f:
