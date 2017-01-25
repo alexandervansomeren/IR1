@@ -8,7 +8,7 @@ import lsm_models
 
 FLAGS = None
 
-def w2v_run(index, doc_names, topics, embedding_size, max_documents):
+def run_w2v(index, doc_names, topics, embedding_size, max_documents):
     
     print("Building / loading word2vec")
     wv2_model_filename = 'models/word2vec.model'    
@@ -55,7 +55,7 @@ def w2v_run(index, doc_names, topics, embedding_size, max_documents):
                     out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
 
 
-def lsi_run(index, doc_names, topics, num_topics):
+def run_lsi(index, doc_names, topics, num_topics):
     
     print("Building / loading LSI")
     lsi_model_filename = 'models/lsi.model'    
