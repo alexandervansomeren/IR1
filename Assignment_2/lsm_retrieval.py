@@ -142,6 +142,6 @@ if __name__ == "__main__":
     parser.add_argument('--method', type = str, default = 'lsi',
                         help='Latent semanctic model [word2vec, lsi, lda, doc2vec].')
 
-    FLAGS, unparsed = parser.parse_known_args()
+    FLAGS = parser.parse_args()
 
     main()
