@@ -5,6 +5,7 @@ import gensim
 import utils
 import numpy as np
 import lsm_models
+import connector_classes
 
 FLAGS = None
 
