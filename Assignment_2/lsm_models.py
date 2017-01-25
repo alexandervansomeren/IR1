@@ -63,7 +63,7 @@ class LSI():
     def __init__(self, filename=None, num_topics=50):
         if filename == None:
             self.model = gensim.models.LsiModel(
-                num_toptics=num_topics) # Latent dimensions
+                num_topics=num_topics) # Latent dimensions
         else:
             self.model = gensim.models.LsiModel.load(filename)
 
