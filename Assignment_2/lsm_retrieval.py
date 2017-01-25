@@ -16,12 +16,15 @@ def main():
 
     print("Building word2vec")
     embedding_size = 50
-    word2vec_model = lsm_models.word2vec_model(index, embedding_size)
-    
+    #word2vec_model = lsm_models.word2vec_model(index, embedding_size)
+    model = gensim.models.Word2Vec.load('models/word2vec.model')
+   
+    # TODO replace block by:
+    # doc_representations = word2vec_model.docs2vec(index)
     print("Building document representations")
     doc_representations = np.zeros([embedding_size, index.document_count()])        
     for d in range(index.document_base(), index.maximum_document()):
-        doc_tokens = index.document(i)[1]
+        doc_tokens = index.document(d)[1]
         docvec = np.zeros([embedding_size, len(doc_tokens)])
         for i, token in enumerate(doc_tokens):
             word = token2id.get(token,0)
