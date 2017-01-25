@@ -34,8 +34,9 @@ class Word2Vec():
         self.model.train(sentences)
     
     def docs2vec(self, index):
-        #docs_representation = np.zeros([embedding_size, index.document_count()])        
-        docs_representation = np.zeros([self.embedding_size,self.max_documents])        
+        #docs_representation = np.zeros([embedding_size, index.document_count()])
+        _, id2token, _ = index.get_dictionary()    
+        docs_representation = np.zeros([self.embedding_size,self.max_documents])   
         for d in range(self.max_documents):#index.maximum_document()):
             doc = index.document(d+1)[1]
             doc_words = list((id2token.get(word_id) for word_id in doc if word_id != 0))
