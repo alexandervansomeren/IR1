@@ -5,6 +5,7 @@ import pyndri
 import sys
 import numpy as np
 import connector_classes
+from gensim.corpora.dictionary import Dictionary
 
 
 class Word2Vec():
@@ -56,37 +57,26 @@ class Word2Vec():
             wordvec[:,i] = self.model[word]
         return np.mean(wordvec, axis=1)
 
-    def rank(self):
-        pass
 
+class LSI():
 
-def word2vec_model(index, embedding_size=300):
-    logging.basicConfig(level=logging.INFO)
-    logging.info('Initializing word2vec.')
+    def __init__(self, filename=None, num_topics=50):
+        if filename == None:
+            self.model = gensim.models.LsiModel(
+                num_toptics=num_topics) # Latent dimensions
+        else:
+            self.model = gensim.models.LsiModel.load(filename)
 
-    model = gensim.models.Word2Vec(
-        size=embedding_size,  # Embedding size
-        window=5,  # One-sided window size
-        sg=True,  # Skip-gram. (False for CBOW)
-        min_count=5,  # Minimum word frequency.
-        sample=1e-3,  # Sub-sample threshold.
-        hs=False,  # Hierarchical softmax.
-        negative=10,  # Number of negative examples.
-        iter=1,  # Number of iterations.
-        workers=8,  # Number of workers.
-    )
+    def train(self, index):
+        dictionary = pyndri.extract_dictionary(index)
+        # TODO make this work
+        corpus = connector_classes.IndriCorpus(index, dictionary) 
+        model.add_documents(corpus)
+        model.save('models/lsi.model')
+    
 
-    logging.info('Loading vocabulary.')    
+#class LDA():
 
-    dictionary = pyndri.extract_dictionary(index)
-    sentences = connector_classes.IndriSentences(index, dictionary)
-
-    logging.info('Constructing word2vec vocabulary.')
-
-    # Build vocab.
-    model.build_vocab(sentences, trim_rule=None)
-    model.train(sentences)
-    model.save('models/word2vec.model')
 
     # If you're finished training a model (=no more updates, only querying)
     # model.init_sims(replace=True)
@@ -103,27 +93,6 @@ def word2vec_model(index, embedding_size=300):
 # 
 #     logging.info('Trained models: %s', models)
 
-    return model
 
 
-def lsi_model(index):
-    logging.basicConfig(level=logging.INFO)
-    logging.info('Initializing LSI.')
 
-    model = gensim.models.LsiModel(num_topics=50) #200,  # Latent dimensions
-
-    logging.info('Loading vocabulary.')    
-
-    #index = pyndri.Index('index/')    
-    dictionary = pyndri.extract_dictionary(index)
-
-    ### TODO arguments
-    corpus = connector_classes.IndriCorpus(index, dictionary)
-
-    logging.info('Constructing word2vec vocabulary.')
-
-    # Add documents
-    model.add_documents(corpus)
-    model.train(corpus)
-
-    return model

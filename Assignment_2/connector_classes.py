@@ -9,7 +9,6 @@ class IndriSentences(gensim.interfaces.CorpusABC):
 
         self.index = index
         self.dictionary = dictionary
-
         self.max_documents = max_documents
 
     def _maximum_document(self):
@@ -23,7 +22,7 @@ class IndriSentences(gensim.interfaces.CorpusABC):
     def __iter__(self):
         for int_doc_id in range(self.index.document_base(),
                                 self._maximum_document()):
-            ext_doc_id, tokens = self.index.document(int_doc_id)
+            tokens = self.index.document(int_doc_id)[1]
 
             yield tuple(
                 self.dictionary[token_id]
@@ -36,51 +35,41 @@ class IndriSentences(gensim.interfaces.CorpusABC):
 class IndriCorpus(gensim.interfaces.CorpusABC):
     """Integrates an Index with Gensim's LSI implementation."""
     
-    def __init__(self, input=None):
-        super(TextCorpus, self).__init__()
-        self.input = input
-        self.dictionary = Dictionary()
-        self.metadata = False
-        if input is not None:
-            self.dictionary.add_documents(self.get_texts())
+    def __init__(self, index, dictionary, max_documents=None):
+        assert isinstance(index, pydnri.Index)
+
+        self.input = index
+        self.dictionary = dictionary
+        self.max_documents = max_documents
+
+        #if input is not None:
+        #    self.dictionary.add_documents(self.get_texts())
+        #else:
+        #    logger.warning("No input document stream provided; assuming "
+        #                   "dictionary will be initialized some other way.")
+
+    def _maximum_document(self):
+        if self.max_documents is None:
+            return self.index.maximum_document()
         else:
-            logger.warning("No input document stream provided; assuming "
-                           "dictionary will be initialized some other way.")
+            return min(
+                self.max_documents + self.index.document_base(),
+                self.index.maximum_document())
 
     def __iter__(self):
         """
         The function that defines a corpus.
         Iterating over the corpus must yield sparse vectors, one for each document.
         """
-        for text in self.get_texts():
-            if self.metadata:
-                yield self.dictionary.doc2bow(text[0], allow_update=False), text[1]
-            else:
-                yield self.dictionary.doc2bow(text, allow_update=False)
+        for int_doc_id in range(self.index.document_base(),
+                                self._maximum_document()):
+            doc = self.index.document(int_doc_id)[1]            
 
-    def getstream(self):
-        return utils.file_or_filename(self.input)
+            bow = [(word_id,count) for word_id,count in dict(Counter(doc)).items() if word_id!= 0]
+            yield sorted(bow.items())
+           
+            #yield self.dictionary.doc2bow(doc, allow_update=False)
 
-    def get_texts(self):
-        """
-        Iterate over the collection, yielding one document at a time. A document
-        is a sequence of words (strings) that can be fed into `Dictionary.doc2bow`.
-        Override this function to match your input (parse input files, do any
-        text preprocessing, lowercasing, tokenizing etc.). There will be no further
-        preprocessing of the words coming out of this function.
-        """
-        # Instead of raising NotImplementedError, let's provide a sample implementation:
-        # assume documents are lines in a single file (one document per line).
-        # Yield each document as a list of lowercase tokens, via `utils.tokenize`.
-        with self.getstream() as lines:
-            for lineno, line in enumerate(lines):
-                if self.metadata:
-                    yield utils.tokenize(line, lowercase=True), (lineno,)
-                else:
-                    yield utils.tokenize(line, lowercase=True)
+    def __len__(self):     
+        return self._maximum_document() - self.index.document_base()
 
-    def __len__(self):
-        if not hasattr(self, 'length'):
-            # cache the corpus length
-            self.length = sum(1 for _ in self.get_texts())
-        return self.length
