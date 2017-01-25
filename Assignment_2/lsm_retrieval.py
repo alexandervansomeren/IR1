@@ -36,12 +36,12 @@ def main():
     print("Building document representations")
     docs_representation_filename = 'tmp/doc2vecs.npy'
     if os.path.isfile(docs_representation_filename):
+        with open(docs_representation_filename, 'rb') as f:
+            docs_representation = np.load(f)
+    else:
         docs_representation = w2v.docs2vec(index)
         with open(docs_representation_filename, 'wb') as f:
             np.save(f, docs_representation)
-    else:
-        with open(docs_representation_filename, 'rb') as f:
-            docs_representation = np.load(f)
 #     doc_representations = np.zeros([embedding_size, index.document_count()])        
 #     for d in range(index.document_base(), index.maximum_document()):
 #         doc = index.document(d)[1]
