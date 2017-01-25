@@ -2,9 +2,10 @@ import numpy as np
 import models
 import utils
 import pyndri
+from scipy.sparse import lil_matrix
 
 
-def construct_positional_tf(topics, index, max_query_terms=0, max_documents=0, max_doc_len=50):
+def construct_positional_tf(topics, index, max_query_terms=0, max_documents=10000, max_doc_len=50):
     token2id, id2token, _ = index.get_dictionary()
     query_term_ids = models.collect_query_terms(topics, token2id)
 
@@ -20,9 +21,9 @@ def construct_positional_tf(topics, index, max_query_terms=0, max_documents=0, m
     for doc_id in range(n_docs):  # doc_id is shifted to the right in tf matrix (1 -> 0)
         for term_id, term in enumerate(query_term_ids):
             if term in index.document(doc_id + 1)[1]:
-                print(doc_id+1[1])
+                print(doc_id + 1[1])
             break
-                # p_tf[term_id, doc_id] = index.document(doc_id + 1)[1].count(term)
+            # p_tf[term_id, doc_id] = index.document(doc_id + 1)[1].count(term)
         break
     # Create dictionary to retrieve index of term in tf matrix
     term2index = {id2token[term_id]: index for index, term_id in enumerate(query_term_ids)}
@@ -35,4 +36,4 @@ index = pyndri.Index('index/')
 # Get queries
 with open('./ap_88_89/topics_title', 'r') as f_topics:
     topics = utils.parse_topics(f_topics)
-construct_positional_tf(topics, index, max_query_terms=0, max_documents=0)
+construct_positional_tf(topics, index, max_query_terms=0, max_documents=10000)
