@@ -65,7 +65,7 @@ def main():
         top_doc = index.document(np.argmax(w2v_score)+1)[1]
         line = str(' ')
         for word_id in top_doc:
-            line = line + id2token[word_id] + ' '
+            line = line + id2token.get(word_id,0) + ' '
         print(line)
         word2vec_results[query_id] = similarity
 
