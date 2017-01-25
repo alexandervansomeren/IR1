@@ -10,6 +10,7 @@ def main():
     # Get documents
     index = pyndri.Index('index/')
     token2id, id2token, _ = index.get_dictionary()
+    doc_names = utils.get_documents_names(index)
 
     # Get queries
     with open('./ap_88_89/topics_title', 'r') as f_topics:
@@ -18,8 +19,8 @@ def main():
     initialize_folders()
 
     print("Building / loading word2vec")
-    embedding_size = 50
-    max_documents = 500
+    embedding_size = 100
+    max_documents = 2000
     wv2_model_filename = 'models/word2vec.model'    
     if os.path.isfile(wv2_model_filename):
         w2v = lsm_models.Word2Vec(filename=wv2_model_filename,
@@ -51,21 +52,14 @@ def main():
 #             docvec[:,i] = model[word]
 #         doc_representations[:,d] = np.mean(docvec, axis=1)
 
-    print("Evaluating word2vec")
-    word2vec_results = {}
+    print("Scoring documents")
+    w2v_results = {}
     for query_id, query in topics.items():
+        # Get query word2vec representation
         query_representation = w2v.query2vec(query)
-        # Build query representation as average of wordvectors
-        #query_tokens = query.lower().split(' ')
-        #wordvec = np.zeros([embedding_size, len(query_tokens)])
-        #for i, word in enumerate(query_tokens):
-        #    wordvec[:,i] = model[word]
-        #query_representation = np.mean(wordvec, axis=1)
-
         # Calculate the similarity with documents
-        similarity = np.zeros([max_documents])
-        for d in range(max_documents):
-            similarity[d] = cosine_similarity(query_representation, doc_representation[:,d])
+        w2v_score = utils.cosine_similarity(query_representation, docs_representation)
+        w2v_results[query_id] = list(zip(w2v_score, doc_names))
 
         print(query)
         top_doc = index.document(np.argmax(similarity)+1)[1]
@@ -73,7 +67,11 @@ def main():
         for word_id in top_doc:
             line = line + id2token[word_id] + ' '
         print(line)
-        #word2vec_results[query_id] = simila
+        word2vec_results[query_id] = similarity
+
+    utils.write_run(model_name='w2v', data=w2v_results, 
+                    out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
+
         
 
 def initialize_folders():
@@ -81,6 +79,8 @@ def initialize_folders():
         os.makedirs('models')
     if not os.path.exists('tmp'):
         os.makedirs('tmp')
+    if not os.path.exists('results'):
+        os.makedirs('results')
 
 if __name__ == "__main__":
     main()

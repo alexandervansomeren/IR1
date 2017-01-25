@@ -11,17 +11,14 @@ import json
 def main():
     # Get documents
     index = pyndri.Index('index/')
+    doc_names = utils.get_document_names(index)
     # Get queries
     with open('./ap_88_89/topics_title', 'r') as f_topics:
         topics = utils.parse_topics(f_topics)
-
     # Get dictionary mapping terms to model index
     with open('term2index.json', 'r') as f:
         term2index = json.load(f)
 
-    doc_names = []
-    for i in range(index.document_base(), index.maximum_document()):
-        doc_names.append(index.document(i)[0])
 
     # """
     # TF IDF

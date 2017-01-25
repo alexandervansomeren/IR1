@@ -82,3 +82,21 @@ def write_run(model_name, data, out_f,
                     rank=rank + 1,
                     relevance=relevance,
                     model_name=model_name))
+
+
+def cosine_similarity(query, docs):
+    """
+    :param tf_idf: tf_idf matrix where rows are terms and columns are documents
+    :param query: query representation vector 
+    :param docs: docs representation matrix where rows are terms or embeddings
+                 and columns are documents
+    :return: numpy array of cosine similarity per document
+    """
+    return np.einsum('ij,i->j',docs,query) / np.linalg.norm(docs,axis=0) * np.linalg.norm(query)
+
+
+def get_document_names(index):
+    doc_names = []
+    for i in range(index.document_base(), index.maximum_document()):
+        doc_names.append(index.document(i)[0])
+    return doc_names
