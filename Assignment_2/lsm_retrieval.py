@@ -68,8 +68,8 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
         # print(line)
 
     # Save results to file
-    utils.write_run(model_name='w2v', data=w2v_results,
-                    out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
+    utils.write_run(model_name='w2v'+ str(embedding_size), data=w2v_results,
+                    out_f='results/ranking_w2v' + str(embedding_size) + '.txt', max_objects_per_query=1000)
 
 
 def run_lsi(index, doc_names, topics, num_topics):

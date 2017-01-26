@@ -17,7 +17,7 @@ class Word2Vec():
                 size=self.embedding_size,  # Embedding size
                 window=5,  # One-sided window size
                 sg=True,  # Skip-gram. (False for CBOW)
-                min_count=1,  # Minimum word frequency.
+                min_count=5,  # Minimum word frequency.
                 sample=1e-3,  # Sub-sample threshold.
                 hs=False,  # Hierarchical softmax.
                 negative=10,  # Number of negative examples.
