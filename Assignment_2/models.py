@@ -35,6 +35,14 @@ def query2indices(query, term2index):
             query_indices.append(term_index)
     return query_indices
 
+def query2word_ids(query, token2id):
+    query_word_ids = []
+    query_tokens = query.lower().split(' ')
+    for term in query_tokens:
+        if term in token2id:
+            word_id = token2id[term]
+            query_word_ids.append(word_id)
+    return query_word_ids
 
 def construct_tf(topics, index, max_query_terms=0, max_documents=0):
     token2id, id2token, _ = index.get_dictionary()
