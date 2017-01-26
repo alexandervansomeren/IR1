@@ -57,7 +57,7 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
         query_representation = w2v.query2vec(query)
         # Calculate the similarity with documents
         w2v_score = utils.cosine_similarity(query_representation, docs_representation[:, best_1000_doc_indices])
-        w2v_results[query_id] = list(zip(w2v_score, doc_names))
+        w2v_results[query_id] = list(zip(w2v_score, [doc_names[i] for i in best_1000_doc_indices]))
 
         # print(query)
         # top_doc = index.document(np.argmax(w2v_score)+1)[1]
@@ -75,7 +75,7 @@ def run_lsi(index, doc_names, topics, num_topics):
     print("Building / loading LSI")
     dictionary = pyndri.extract_dictionary(index)
     corpus = connector_classes.IndriCorpus(index, dictionary)
-    lsi_model_filename = 'models/lsi.model'
+    lsi_model_filename = 'models/lsi.model' + str(num_topics)
     if os.path.isfile(lsi_model_filename):
         lsi = lsm_models.LSI(filename=lsi_model_filename,
                              num_topics=num_topics)
@@ -103,14 +103,14 @@ def run_lda(index, doc_names, topics, num_topics):
     print("Building / loading LDA")
     dictionary = pyndri.extract_dictionary(index)
     corpus = connector_classes.IndriCorpus(index, dictionary)
-    lda_model_filename = 'models/lda.model'
+    lda_model_filename = 'models/lda.model' + str(num_topics)
     if os.path.isfile(lda_model_filename):
         lda = lsm_models.LDA(filename=lda_model_filename,
                              num_topics=num_topics)
     else:
         lda = lsm_models.LDA(corpus=corpus,
                              num_topics=num_topics)
-        lda.save(ldi_model_filename)
+        lda.save(lda_model_filename)
 
     print("Scoring documents")
     lda_results = {}
@@ -144,9 +144,11 @@ def main():
         for embedding_size in [50, 100, 150, 200]:
             run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     elif FLAGS.method == 'lsi':
-        run_lsi(index, doc_names, topics, 20)
+        for num_topics in [50, 100, 150, 200]:
+            run_lsi(index, doc_names, topics, num_topics)
     elif FLAGS.method == 'lda':
-        run_lda(index, doc_names, topics, 20)
+        for num_topics in [50, 100, 150, 200]:
+            run_lda(index, doc_names, topics, num_topics)
 
 
 if __name__ == "__main__":
