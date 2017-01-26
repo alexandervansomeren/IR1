@@ -1,3 +1,4 @@
+import json
 import os
 import argparse
 import pyndri
@@ -6,6 +7,7 @@ import utils
 import numpy as np
 import lsm_models
 import connector_classes
+import models
 
 FLAGS = None
 
@@ -36,13 +38,26 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
         with open(docs_representation_filename, 'wb') as f:
             np.save(f, docs_representation)
 
+    f_tfidf = 'tfidf.npy'
+    with open(f_tfidf, 'rb') as f:
+        tf_idf = np.load(f)
+
+    with open('term2index.json', 'r') as f:
+        term2index = json.load(f)
+
     print("Scoring documents")
     w2v_results = {}
     for query_id, query in topics.items():
+        # Get top 1000 tf-idf
+        query_indices = models.query2indices(query, term2index)
+        tf_idf_score = models.tf_idf_score(tf_idf, query_indices)
+        tf_idf_ranked_doc_indices = np.argsort(-tf_idf_score)
+        best_1000_doc_indices = tf_idf_ranked_doc_indices[0:1000]
+
         # Get query word2vec representation
         query_representation = w2v.query2vec(query)
         # Calculate the similarity with documents
-        w2v_score = utils.cosine_similarity(query_representation, docs_representation)
+        w2v_score = utils.cosine_similarity(query_representation, docs_representation[:, best_1000_doc_indices])
         w2v_results[query_id] = list(zip(w2v_score, doc_names))
 
         # print(query)
