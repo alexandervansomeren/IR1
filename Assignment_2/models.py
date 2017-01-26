@@ -30,7 +30,7 @@ def query2indices(query, term2index):
     query_indices = []
     query_tokens = query.lower().split(' ')
     for term in query_tokens:
-        if term in term2index:  # TODO why (lending)?
+        if term in term2index:
             term_index = term2index[term]
             query_indices.append(term_index)
     return query_indices

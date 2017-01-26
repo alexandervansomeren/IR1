@@ -74,6 +74,8 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
 def run_lsi(index, doc_names, topics, num_topics):
     print("Building / loading LSI")
     dictionary = pyndri.extract_dictionary(index)
+    print(index)
+    print(dictionary)
     corpus = connector_classes.IndriCorpus(index, dictionary)
     lsi_model_filename = 'models/lsi.model' + str(num_topics)
     if os.path.isfile(lsi_model_filename):

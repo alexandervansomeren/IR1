@@ -5,33 +5,39 @@ import numpy as np
 import models
 import utils
 import pyndri
+import collections
 from scipy.sparse import lil_matrix
 
 
-def plm(index, word_prior, best_100_doc_indices, query_indices_plus_terms, max_query_terms=0, max_doc_len=100):
-
-
-    k = gaussian_kernel(size=99, sigma=50)
-
+def plm(index, word_prior, best_100_doc_indices, query_ids, k, max_doc_len=100):
+    scores_per_doc = {}
     for doc_id in best_100_doc_indices:  # doc_id is shifted to the right in tf matrix (1 -> 0)
         doc = np.array(index.document(doc_id + 1)[1][0:max_doc_len])
-        plm_matrix = np.zeros([len(query_indices_plus_terms), max_doc_len])
+        plm_matrix = np.zeros([len(query_ids), max_doc_len])
         print(doc)
         # Set indices for query terms to 1 if they appear
-        for term_id, term in query_indices_plus_terms:
-            if term in doc:
-                indices = np.where(doc == term)
+        for term_index, term_id in enumerate(query_ids):
+            if term_id in doc:
+                indices = np.where(doc == term_id)
                 for i in indices:
-                    plm_matrix[term_id, i] = 1
+                    plm_matrix[term_index, i] = 1
 
         # Apply kernel to get propagated count
         plm_matrix = np.apply_along_axis(convolve_or_skip, 1, plm_matrix, k)
 
         # Apply Dirichlet Prior Smoothing
         mu = 150
+        print(word_prior)
         plm_matrix = (plm_matrix + (mu * word_prior[:, np.newaxis])) / (plm_matrix.sum(axis=0) + mu)
-        print(plm_matrix)
-        break
+
+        # Assume uniform P(w|Q), so scoring will just be the sum of matrix
+        scores_per_index = plm_matrix.sum(axis=0)
+        score = scores_per_index.max()
+        scores_per_doc[doc_id] = score
+    ordered_scores_per_doc = sorted(scores_per_doc.items(), key=lambda x: -x[1])
+    doc_ids = [d[0] for d in ordered_scores_per_doc]
+    scores = [d[1] for d in ordered_scores_per_doc]
+    return doc_ids, scores
 
 
 def convolve_or_skip(a, k):
@@ -104,15 +110,29 @@ with open('term2index.json', 'r') as f:
 word_prior = tf.sum(axis=1) / tf.sum()
 token2id, id2token, _ = index.get_dictionary()
 
+# Kernal
+kernel_name = "gaussian"
+
+if kernel_name == "gaussian":
+    k = gaussian_kernel(size=99, sigma=50)
+elif kernel_name == "triangle":
+    k = triangle_kernel(size=99, sigma=50)
+elif kernel_name == "cosine_hamming":
+    k = cosine_hamming_kernel(size=99, sigma=50)
+elif kernel_name == "circle":
+    k = circle_kernel(size=99, sigma=50)
+
+results = {}
 for query_id, query in topics.items():
     # Get top 100 tf-idf
     query_indices = models.query2indices(query, term2index)
     tf_idf_score = models.tf_idf_score(tf_idf, query_indices)
     tf_idf_ranked_doc_indices = np.argsort(-tf_idf_score)
     best_100_doc_indices = tf_idf_ranked_doc_indices[0:100]
-    print(query)
-    query_indices_plus_terms = list(zip(query_indices, [token2id[q] for q in query.split(' ')]))
-    print('****************')
-    print(query_indices_plus_terms)
-    plm(index, word_prior, best_100_doc_indices, query_indices_plus_terms, max_query_terms=0)
-    break
+    query_ids = [token2id[q.lower()] for q in query.split(' ')]
+    doc_ids, scores = plm(index, np.array([word_prior[i] for i in query_indices]), best_100_doc_indices, query_ids, k)
+    doc_names = [index.document(doc_id)[0] for doc_id in doc_ids]
+    results[query_id] = list(zip(scores, doc_names))
+model_name = 'plm' + kernel_name
+utils.write_run(model_name=model_name, data=results,
+                out_f='results/ranking_' + model_name + '.txt', max_objects_per_query=100)
