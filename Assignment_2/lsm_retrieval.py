@@ -143,9 +143,8 @@ def main():
     # Run LSM for command line argument method
     # loop over 300
     if FLAGS.method == 'word2vec':
-        #for embedding_size in [50, 100, 150, 200]:
-        embedding_size = 50
-        run_w2v(index, doc_names, topics, embedding_size, index.document_count())
+        for embedding_size in [100, 150, 200]:
+            run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     elif FLAGS.method == 'lsi':
         for num_topics in [50, 100, 150, 200]:
             run_lsi(index, doc_names, topics, num_topics)
