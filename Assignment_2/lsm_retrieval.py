@@ -27,7 +27,6 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
     print('Size Word2Vec model')
     print(len(w2v.model.wv.vocab))
 
-    # Only for top 1000 tfidf!
     print("Building document representations")
     docs_representation_filename = 'tmp/doc2vecs' + str(embedding_size) + '.npy'
     if os.path.isfile(docs_representation_filename):

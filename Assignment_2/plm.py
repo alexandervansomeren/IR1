@@ -8,7 +8,7 @@ import pyndri
 from scipy.sparse import lil_matrix
 
 
-def plm(topics, index, word_prior, max_query_terms=0, max_documents=0, max_doc_len=100):
+def plm(topics, index, word_prior, best_100_doc_indices, max_query_terms=0, max_doc_len=100):
     token2id, id2token, _ = index.get_dictionary()
     query_term_ids = models.collect_query_terms(topics, token2id)
 
@@ -17,12 +17,10 @@ def plm(topics, index, word_prior, max_query_terms=0, max_documents=0, max_doc_l
     # Take small sample for debugging purposes
     if max_query_terms > 0:
         query_term_ids = list(query_term_ids)[0:max_query_terms]
-    if max_documents > 0:
-        n_docs = max_documents
 
     k = gaussian_kernel(size=99, sigma=50)
 
-    for doc_id in range(n_docs):  # doc_id is shifted to the right in tf matrix (1 -> 0)
+    for doc_id in best_100_doc_indices:  # doc_id is shifted to the right in tf matrix (1 -> 0)
         doc = np.array(index.document(doc_id + 1)[1][0:max_doc_len])
         plm_matrix = np.zeros([len(query_term_ids), max_doc_len])
 
@@ -117,6 +115,6 @@ for query_id, query in topics.items():
     query_indices = models.query2indices(query, term2index)
     tf_idf_score = models.tf_idf_score(tf_idf, query_indices)
     tf_idf_ranked_doc_indices = np.argsort(-tf_idf_score)
-    best_1000_doc_indices = tf_idf_ranked_doc_indices[0:100]
-    plm(topics, index, word_prior, max_query_terms=0)
+    best_100_doc_indices = tf_idf_ranked_doc_indices[0:100]
+    plm(topics, index, word_prior, best_100_doc_indices, max_query_terms=0)
     break
