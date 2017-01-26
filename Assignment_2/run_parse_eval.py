@@ -3,16 +3,19 @@ import pickle
 import subprocess
 import pandas as pd
 
+set = 'test'
+# set = 'validation'
+
 for result_file in glob.glob('./results/*.txt'):
     print("Processing" + result_file)
     subprocess.call(
-        'trec_eval -m all_trec -q ap_88_89/qrel_test '
-        + result_file + ' | grep -E "(^ndcg_cut_10)|(^P_5)|(^recall_1000)|(^map_cut_1000)" > ./trec_results_test/' +
-        result_file.split('/')[-1], shell=True)
+        'trec_eval -m all_trec -q ap_88_89/qrel_' + set + ' '
+        + result_file + ' | grep -E "(^ndcg_cut_10)|(^P_5)|(^recall_1000)|(^map_cut_1000)" > ./trec_results_' + set
+        + '/' + result_file.split('/')[-1], shell=True)
 
 results = []
 
-for trec_result_file in glob.glob('./trec_results_test/*.txt'):
+for trec_result_file in glob.glob('./trec_results_' + set + '/*.txt'):
     with open(trec_result_file, 'r') as f:
         df = pd.read_csv(trec_result_file, header=None, delimiter=r"\s+")
         df = df.pivot(index=1, columns=0, values=2)
@@ -23,4 +26,4 @@ for trec_result_file in glob.glob('./trec_results_test/*.txt'):
 
 results = pd.concat(results, axis=1)
 print(results)
-results.to_csv('results_task2.csv')
+results.to_csv('results_' + set + '_task2.csv')

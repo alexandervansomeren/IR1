@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 
 import models
@@ -6,7 +8,7 @@ import pyndri
 from scipy.sparse import lil_matrix
 
 
-def plm(topics, index, max_query_terms=0, max_documents=0, max_doc_len=100):
+def plm(topics, index, word_prior, max_query_terms=0, max_documents=0, max_doc_len=100):
     token2id, id2token, _ = index.get_dictionary()
     query_term_ids = models.collect_query_terms(topics, token2id)
 
@@ -31,8 +33,12 @@ def plm(topics, index, max_query_terms=0, max_documents=0, max_doc_len=100):
                 for i in indices:
                     plm_matrix[term_id, i] = 1
 
-        # normalize
-        print(np.apply_along_axis(convolve_or_skip, 1, plm_matrix, k))
+        # Apply kernel to get propagated count
+        plm_matrix = np.apply_along_axis(convolve_or_skip, 1, plm_matrix, k)
+
+        # Apply Dirichlet Prior Smoothing
+        mu = 150
+        plm_matrix = (plm_matrix + (mu * word_prior[:, np.newaxis])) / (plm_matrix.sum(axis=0) + mu)
 
         break
 
@@ -86,12 +92,31 @@ def passage_kernel(size=50, sigma=50):
             k[j] = 1
     return k
 
+
 # Get documents
 index = pyndri.Index('index/')
 
 # Get queries
 with open('./ap_88_89/topics_title', 'r') as f_topics:
     topics = utils.parse_topics(f_topics)
-plm(topics, index, max_query_terms=0)
-# with open('p_tf.npy', 'wb') as f:
-#     np.save(f, p_tf)
+
+with open('tf.npy', 'rb') as f:
+    tf = np.load(f)
+
+f_tfidf = 'tfidf.npy'
+with open(f_tfidf, 'rb') as f:
+    tf_idf = np.load(f)
+
+with open('term2index.json', 'r') as f:
+    term2index = json.load(f)
+
+word_prior = tf.sum(axis=1) / tf.sum()
+
+for query_id, query in topics.items():
+    # Get top 100 tf-idf
+    query_indices = models.query2indices(query, term2index)
+    tf_idf_score = models.tf_idf_score(tf_idf, query_indices)
+    tf_idf_ranked_doc_indices = np.argsort(-tf_idf_score)
+    best_1000_doc_indices = tf_idf_ranked_doc_indices[0:100]
+    plm(topics, index, word_prior, max_query_terms=0)
+    break
