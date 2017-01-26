@@ -9,22 +9,23 @@ import connector_classes
 
 FLAGS = None
 
+
 def run_w2v(index, doc_names, topics, embedding_size, max_documents):
-    
     print("Building / loading word2vec")
-    wv2_model_filename = 'models/word2vec.model'    
+    wv2_model_filename = 'models/word2vec.model'
     if os.path.isfile(wv2_model_filename):
         w2v = lsm_models.Word2Vec(filename=wv2_model_filename,
                                   embedding_size=embedding_size,
                                   max_documents=max_documents)
     else:
         w2v = lsm_models.Word2Vec(embedding_size=embedding_size,
-                                  max_documents=max_documents) 
+                                  max_documents=max_documents)
         w2v.train(index)
 
     print('Size Word2Vec model')
     print(len(w2v.model.wv.vocab))
 
+    # Only for top 1000 tfidf!
     print("Building document representations")
     docs_representation_filename = 'tmp/doc2vecs.npy'
     if os.path.isfile(docs_representation_filename):
@@ -44,24 +45,23 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
         w2v_score = utils.cosine_similarity(query_representation, docs_representation)
         w2v_results[query_id] = list(zip(w2v_score, doc_names))
 
-        #print(query)
-        #top_doc = index.document(np.argmax(w2v_score)+1)[1]
-        #line = str(' ')
-        #for word_id in top_doc:
+        # print(query)
+        # top_doc = index.document(np.argmax(w2v_score)+1)[1]
+        # line = str(' ')
+        # for word_id in top_doc:
         #    line = line + str(id2token.get(word_id,0)) + ' '
-        #print(line)
+        # print(line)
 
     # Save results to file
-    utils.write_run(model_name='w2v', data=w2v_results, 
+    utils.write_run(model_name='w2v', data=w2v_results,
                     out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
 
 
 def run_lsi(index, doc_names, topics, num_topics):
-    
     print("Building / loading LSI")
     dictionary = pyndri.extract_dictionary(index)
-    corpus = connector_classes.IndriCorpus(index, dictionary) 
-    lsi_model_filename = 'models/lsi.model'    
+    corpus = connector_classes.IndriCorpus(index, dictionary)
+    lsi_model_filename = 'models/lsi.model'
     if os.path.isfile(lsi_model_filename):
         lsi = lsm_models.LSI(filename=lsi_model_filename,
                              num_topics=num_topics)
@@ -72,25 +72,24 @@ def run_lsi(index, doc_names, topics, num_topics):
 
     print("Scoring documents")
     lsi_results = {}
-    #for query_id, query in topics.items():
-        # Get query word2vec representation
-        #query_representation = w2v.query2vec(query)
-        # Calculate the similarity with documents
-        #w2v_score = utils.cosine_similarity(query_representation, docs_representation)
-        #w2v_results[query_id] = list(zip(w2v_score, doc_names))
+    # for query_id, query in topics.items():
+    # Get query word2vec representation
+    # query_representation = w2v.query2vec(query)
+    # Calculate the similarity with documents
+    # w2v_score = utils.cosine_similarity(query_representation, docs_representation)
+    # w2v_results[query_id] = list(zip(w2v_score, doc_names))
 
 
     # Save results to file
-    #utils.write_run(model_name='w2v', data=w2v_results, 
+    # utils.write_run(model_name='w2v', data=w2v_results,
     #                out_f='results/ranking_w2v.txt', max_objects_per_query=1000)
 
 
 def run_lda(index, doc_names, topics, num_topics):
-    
     print("Building / loading LDA")
     dictionary = pyndri.extract_dictionary(index)
-    corpus = connector_classes.IndriCorpus(index, dictionary) 
-    lda_model_filename = 'models/lda.model'    
+    corpus = connector_classes.IndriCorpus(index, dictionary)
+    lda_model_filename = 'models/lda.model'
     if os.path.isfile(lda_model_filename):
         lda = lsm_models.LDA(filename=lda_model_filename,
                              num_topics=num_topics)
@@ -102,6 +101,7 @@ def run_lda(index, doc_names, topics, num_topics):
     print("Scoring documents")
     lda_results = {}
 
+
 def initialize_folders():
     if not os.path.exists('models'):
         os.makedirs('models')
@@ -112,7 +112,6 @@ def initialize_folders():
 
 
 def main():
-
     # Get documents
     index = pyndri.Index('index/')
     token2id, id2token, _ = index.get_dictionary()
@@ -126,8 +125,10 @@ def main():
     initialize_folders()
 
     # Run LSM for command line argument method
+    # loop over 300
     if FLAGS.method == 'word2vec':
-        run_w2v(index, doc_names, topics, 300, index.document_count())
+        for embedding_size in [50, 100, 150, 200]:
+            run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     elif FLAGS.method == 'lsi':
         run_lsi(index, doc_names, topics, 20)
     elif FLAGS.method == 'lda':
@@ -135,11 +136,10 @@ def main():
 
 
 if __name__ == "__main__":
-
     # Command line arguments
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--method", type = str, default = 'lsi',
+    parser.add_argument("--method", type=str, default='lsi',
                         help='Latent semanctic model [word2vec, lsi, lda, doc2vec].')
 
     FLAGS = parser.parse_args()
