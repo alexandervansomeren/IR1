@@ -14,7 +14,7 @@ FLAGS = None
 
 def run_w2v(index, doc_names, topics, embedding_size, max_documents):
     print("Building / loading word2vec")
-    wv2_model_filename = 'models/word2vec.model'
+    wv2_model_filename = 'models/word2vec' + str(embedding_size) + '.model'
     if os.path.isfile(wv2_model_filename):
         w2v = lsm_models.Word2Vec(filename=wv2_model_filename,
                                   embedding_size=embedding_size,
@@ -29,7 +29,7 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
 
     # Only for top 1000 tfidf!
     print("Building document representations")
-    docs_representation_filename = 'tmp/doc2vecs.npy'
+    docs_representation_filename = 'tmp/doc2vecs' + str(embedding_size) + '.npy'
     if os.path.isfile(docs_representation_filename):
         with open(docs_representation_filename, 'rb') as f:
             docs_representation = np.load(f)
