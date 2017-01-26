@@ -3,8 +3,8 @@ import pickle
 import subprocess
 import pandas as pd
 
-set = 'test'
-# set = 'validation'
+# set = 'test'
+set = 'validation'
 
 for result_file in glob.glob('./results/*.txt'):
     print("Processing" + result_file)
