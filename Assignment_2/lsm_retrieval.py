@@ -43,7 +43,7 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
     for query_id, query in topics.items():
         # Get word2vec representation for query and top 1000 docs
         query_representation = w2v.query2vec(query)
-        top_docs_representation = docs_represenation[:, best_1000_doc_indices[query_id]]
+        top_docs_representation = docs_representation[:, best_1000_doc_indices[query_id]]
         # Calculate the similarity with top 1000 document representations
         w2v_score = utils.cosine_similarity(query_representation, top_docs_representation)
         w2v_results[query_id] = list(zip(w2v_score, 
