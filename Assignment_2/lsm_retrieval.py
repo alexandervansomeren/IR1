@@ -261,5 +261,5 @@ if __name__ == "__main__":
 
     FLAGS = parser.parse_args()
 
-    #main()
-    run_all()
+    main()
+    # run_all()

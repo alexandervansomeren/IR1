@@ -1,4 +1,6 @@
 import copy
+from collections import Counter
+
 import gensim
 import logging
 import pyndri

@@ -1,8 +1,12 @@
 import collections
 import io
+import json
 import logging
 import sys
 import numpy as np
+
+import models
+
 
 def parse_topics(f,
                  max_topics=sys.maxsize, delimiter=';'):
