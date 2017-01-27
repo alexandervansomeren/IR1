@@ -36,19 +36,16 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
         with open(docs_representation_filename, 'wb') as f:
             np.save(f, docs_representation)
 
-
     print("Scoring documents")
     w2v_results = {}
     # Get top 1000 documents tf-idf ranking
     best_1000_doc_indices = utils.get_top_1000_tf_idf(topics)
-    print(best_1000_doc_indices)
-
     for query_id, query in topics.items():
-        # Get query word2vec representation
+        # Get word2vec representation for query and top 1000 docs
         query_representation = w2v.query2vec(query)
+        top_docs_representation = docs_represenation[:, best_1000_doc_indices[query_id]]
         # Calculate the similarity with top 1000 document representations
-        w2v_score = utils.cosine_similarity(query_representation, 
-                                            docs_representation[:, best_1000_doc_indices])
+        w2v_score = utils.cosine_similarity(query_representation, top_docs_representation)
         w2v_results[query_id] = list(zip(w2v_score, 
                                 [doc_names[i] for i in best_1000_doc_indices]))
 

@@ -107,6 +107,7 @@ def get_document_names(index):
     return doc_names
 
 def get_top_1000_tf_idf(topics):
+    best_1000_query_dict = {}
     # Load tf-idf model
     with open('tfidf.npy', 'rb') as f:
         tf_idf = np.load(f)
@@ -118,6 +119,8 @@ def get_top_1000_tf_idf(topics):
         query_indices = models.query2indices(query, term2index)
         tf_idf_score = models.tf_idf_score(tf_idf, query_indices)
         tf_idf_ranked_doc_indices = np.argsort(-tf_idf_score)
-        best_1000_doc_indices = tf_idf_ranked_doc_indices[0:1000]
+        best_1000_query_dict[query_id] = tf_idf_ranked_doc_indices[0:1000]
+    return best_1000_query_dict
+        
 
 
