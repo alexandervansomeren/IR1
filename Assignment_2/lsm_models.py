@@ -80,6 +80,8 @@ class LSI():
             bow = [(word_id,count) for word_id,count in 
                     dict(Counter(doc)).items() if word_id!= 0]
             #print(self.model[sorted(bow)])
+            print([p for _,p in self.model[sorted(bow)]])
+            print(docs_projection.shape)
             docs_projection[:,d] = [p for _,p in self.model[sorted(bow)]]
         return docs_projection
 
