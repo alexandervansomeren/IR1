@@ -19,51 +19,43 @@ def main():
     with open('term2index.json', 'r') as f:
         term2index = json.load(f)
 
-
-    # """
-    # TF IDF
-    # """
-    # print("Evaluating tf_idf")
-    # start = time.time()
-    # tfidf_results = {}
-    # with open('tfidf.npy', 'rb') as f:
-    #     tf_idf = np.load(f)
-    #
-    # for query_id, query in topics.items():
-    #     query_indices = models.query2indices(query, term2index)
-    #     tfidf_score = models.tf_idf_score(tf_idf, query_indices)
-    #     # print("   Score: " + str(tfidf_score) + "   Query: " + query)
-    #     tfidf_results[query_id] = list(zip(tfidf_score, doc_names))
-    #
-    # utils.write_run(model_name='tfidf', data=tfidf_results,
-    #                 out_f='results/ranking_tfidf.txt', max_objects_per_query=1000)
-    #
-    # del tf_idf
-    # del tfidf_results
-    # duration = time.time() - start
-    # print("Finished evaluating tf_idf in " + '%.2f' % duration + " seconds (" + '%.2f' % (duration / 60) + " minutes)")
-    #
-    # """
-    # BM25
-    # """
-    # print("Evaluating bm25")
-    # start = time.time()
-    # with open('bm25.npy', 'rb') as f:
-    #     bm25 = np.load(f)
-    #
-    # bm25_results = {}
-    # for query_id, query in topics.items():
-    #     query_indices = models.query2indices(query, term2index)
-    #     bm25_score = models.bm25_score(bm25, query_indices)
-    #     bm25_results[query_id] = list(zip(bm25_score, doc_names))
-    #
-    # utils.write_run(model_name='bm25', data=bm25_results,
-    #                 out_f='results/ranking_bm25.txt', max_objects_per_query=1000)
-    #
-    # del bm25
-    # del bm25_results
-    # duration = time.time() - start
-    # print("Finished evaluating bm25 in " + '%.2f' % duration + " seconds (" + '%.2f' % (duration / 60) + " minutes)")
+    """
+     TF IDF
+    """
+    print("Evaluating tf_idf")
+    tfidf_results = {}
+    
+    with open('tfidf.npy', 'rb') as f:
+        tf_idf = np.load(f)
+    
+    for query_id, query in topics.items():
+        query_indices = models.query2indices(query, term2index)
+        tfidf_score = models.tf_idf_score(tf_idf, query_indices)
+        # print("   Score: " + str(tfidf_score) + "   Query: " + query)
+        tfidf_results[query_id] = list(zip(tfidf_score, doc_names))
+    
+    utils.write_run(model_name='tfidf', data=tfidf_results,
+                    out_f='results/ranking_tfidf.txt', max_objects_per_query=1000)
+    
+    print("Finished evaluating tf_idf in " + '%.2f' % duration + " seconds (" + '%.2f' % (duration / 60) + " minutes)")
+    
+    """
+     BM25
+    """
+    print("Evaluating bm25")
+    
+    with open('bm25.npy', 'rb') as f:
+        bm25 = np.load(f)
+   
+    bm25_results = {}
+    for query_id, query in topics.items():
+        query_indices = models.query2indices(query, term2index)
+        bm25_score = models.bm25_score(bm25, query_indices)
+        bm25_results[query_id] = list(zip(bm25_score, doc_names))
+   
+    utils.write_run(model_name='bm25', data=bm25_results,
+                    out_f='results/ranking_bm25.txt', max_objects_per_query=1000)
+    print("Finished evaluating bm25 in " + '%.2f' % duration + " seconds (" + '%.2f' % (duration / 60) + " minutes)")
 
     """
     Language models

@@ -1,6 +1,7 @@
 import gensim
 import pyndri
 from collections import Counter
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 
 class IndriSentences(gensim.interfaces.CorpusABC):
     """Integrates an Index with Gensim's word2vec implementation."""
@@ -66,9 +67,6 @@ class IndriCorpus(gensim.interfaces.CorpusABC):
     def __len__(self):     
         return self._maximum_document() - self.index.document_base()
 
-
-                        # Model: doc2vec
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 
 class IndriDocs(gensim.interfaces.CorpusABC):
     """Integrates an Index with Gensim's Doc2Vec implementation."""
