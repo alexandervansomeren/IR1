@@ -81,7 +81,7 @@ class LSI():
                     dict(Counter(doc)).items() if word_id!= 0]
             #print(self.model[sorted(bow)])
             if len(bow) != 0:
-                docs_projection[:,d] = [p for _,p in self.model[sorted(bow)]]
+                docs_projection[:,d] = np.array([p for _,p in self.model[sorted(bow)]])
             else:
                 print("Document " + str(d))
                 print(sorted(bow))
@@ -93,8 +93,12 @@ class LSI():
     def query_projection(self, query_word_ids):
         bow = [(word_id,count) for word_id,count in 
                 dict(Counter(query_word_ids)).items() if word_id!= 0]
-        return np.array([p for _,p in self.model[sorted(bow)]])
-                
+        if len(bow) != 0:
+            query_projection = np.array([p for _,p in self.model[sorted(bow)]])
+        else:
+            print(query_word_ids)
+            query_projection = np.zeros([self.num_topics])
+        return query_projection                
 
 class LDA():
     def __init__(self, filename=None, corpus=None, num_topics=50, max_documents=500):
