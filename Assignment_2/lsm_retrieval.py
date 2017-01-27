@@ -41,6 +41,7 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
     w2v_results = {}
     # Get top 1000 documents tf-idf ranking
     best_1000_doc_indices = utils.get_top_1000_tf_idf(topics)
+    print(best_1000_doc_indices)
 
     for query_id, query in topics.items():
         # Get query word2vec representation
