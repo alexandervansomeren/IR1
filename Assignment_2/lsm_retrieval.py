@@ -47,7 +47,7 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
         # Calculate the similarity with top 1000 document representations
         w2v_score = utils.cosine_similarity(query_representation, top_docs_representation)
         w2v_results[query_id] = list(zip(w2v_score, 
-                                [doc_names[i] for i in best_1000_doc_indices]))
+                                [doc_names[i] for i in best_1000_doc_indices[query_id]]))
 
     # Save results to file
     utils.write_run(model_name='w2v'+ str(embedding_size), data=w2v_results,
