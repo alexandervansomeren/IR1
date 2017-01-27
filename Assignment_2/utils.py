@@ -5,7 +5,7 @@ import logging
 import sys
 import numpy as np
 
-from Assignment_2 import models
+import models
 
 
 def parse_topics(f,
