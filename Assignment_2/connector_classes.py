@@ -97,7 +97,7 @@ class IndriDocs(gensim.interfaces.CorpusABC):
         for int_doc_id in range(self.index.document_base(),
                                 self._maximum_document()):
             doc = self.index.document(int_doc_id)[1]            
-            tokens = [self.id2token(word_id) for word_id in doc]
+            tokens = [self.id2token[word_id] for word_id in doc]
             yield TaggedDocument(tokens, [int_doc_id])
 
     def __len__(self):     
