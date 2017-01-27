@@ -80,9 +80,11 @@ class LSI():
             bow = [(word_id,count) for word_id,count in 
                     dict(Counter(doc)).items() if word_id!= 0]
             #print(self.model[sorted(bow)])
-            print([p for _,p in self.model[sorted(bow)]])
-            print(docs_projection.shape)
-            docs_projection[:,d] = [p for _,p in self.model[sorted(bow)]]
+            try:
+                docs_projection[:,d] = [p for _,p in self.model[sorted(bow)]]
+            except:
+                print([p for _,p in self.model[sorted(bow)]])
+                print(docs_projection.shape)
         return docs_projection
 
     def query_projection(self, query_word_ids):
