@@ -163,7 +163,7 @@ def run_d2v(index, doc_names, topics, size, max_documents):
         d2v.save(d2v_model_filename)
 
     print("Building document representations")
-    docs_representation_filename = 'tmp/doc2topics' + str(num_topics) + '.npy'
+    docs_representation_filename = 'tmp/doc2??' + str(num_topics) + '.npy'
     if os.path.isfile(docs_representation_filename):
         with open(docs_representation_filename, 'rb') as f:
             docs_representation = np.load(f)
@@ -242,7 +242,7 @@ def run_all():
     # Create directories if they do not exist
     initialize_folders()
 
-    for embedding_size in [50, 100, 150, 200]:
+    for embedding_size in [50, 100, 200]:
         run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     for num_topics in [50, 100, 150, 200]:
         run_lsi(index, doc_names, topics, num_topics, index.document_count())
@@ -254,7 +254,7 @@ if __name__ == "__main__":
     # Command line arguments
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--method", type=str, default='word2vec',
+    parser.add_argument("--method", type=str, default='lsi',
                         help='Latent semanctic model [word2vec, lsi, lda, doc2vec].')
 
     FLAGS = parser.parse_args()
