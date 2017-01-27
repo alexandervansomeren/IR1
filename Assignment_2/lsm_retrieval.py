@@ -89,7 +89,7 @@ def run_lsi(index, doc_names, topics, num_topics, max_documents):
         # Get projected representation for query and top 1000 docs
         query_word_ids = models.query2word_ids(query, token2id)
         query_projection = lsi.query_projection(query_word_ids)
-        top_docs_representation = docs_representation[:,best_1000_indices[query_id]]
+        top_docs_representation = docs_representation[:,best_1000_doc_indices[query_id]]
         # Calculate the similarity with top 1000 document representations
         lsi_score = utils.cosine_similarity(query_projection, top_docs_representation)
         lsi_results[query_id] = list(zip(lsi_score,
@@ -135,7 +135,7 @@ def run_lda(index, doc_names, topics, num_topics, max_documents):
         # Get topic distribution for query and top 1000 docs
         query_word_ids = models.query2word_ids(query, token2id)
         query_representation = lda.query2topic(query_word_ids)
-        top_docs_representation = docs_representation[:,best_1000_indices[query_id]]        
+        top_docs_representation = docs_representation[:,best_1000_doc_indices[query_id]]        
         # Calculate the similarity with top 1000 document representations
         lda_score = utils.cosine_similarity(query_representation, top_docs_representation)
         lda_results[query_id] = list(zip(lda_score,
@@ -181,7 +181,7 @@ def run_d2v(index, doc_names, topics, size, max_documents):
         # Get topic distribution for query and top 1000 docs
         query_word_ids = models.query2word_ids(query, token2id)
         query_representation = d2v.query2topic(query_word_ids)
-        top_docs_representation = docs_representation[:,best_1000_indices[query_id]]        
+        top_docs_representation = docs_representation[:,best_1000_doc_indices[query_id]]        
         # Calculate the similarity with top 1000 document representations
         d2v_score = utils.cosine_similarity(query_representation, top_docs_representation)
         d2v_results[query_id] = list(zip(d2v_score,
