@@ -36,8 +36,8 @@ class IndriSentences(gensim.interfaces.CorpusABC):
 class IndriCorpus(gensim.interfaces.CorpusABC):
     """Integrates an Index with Gensim's LSI implementation."""
     
-    def __init__(self, index, dictionary):
-        assert isinstance(index, pyndri.Index, max_documents=None)
+    def __init__(self, index, dictionary, max_documents=None):
+        assert isinstance(index, pyndri.Index)
 
         self.index = index
         self.dictionary = dictionary
