@@ -68,7 +68,7 @@ class LSI():
         else:
             self.model = gensim.models.LsiModel.load(filename)
 
-    def save(self, filename='models/lsi.model'):
+    def save(self, filename='models/lsi' + str(self.num_topics) + '.model'):
         self.model.save(filename)
 
     def docs_projection(self, index):
@@ -97,22 +97,35 @@ class LDA():
         else:
             self.model = gensim.models.LdaModel.load(filename)
 
-    def save(self, filename='models/lda.model'):
+    def save(self, filename='models/lda' + str(self.num_topics) + '.model'):
         self.model.save(filename)
 
+    def docs2topic(self, index):
+        docs_topic_distribution = np.zeros([self.num_topics, self.max_documents])
+        for d in range(self.max_documents):
+            doc = index.document(d + 1)[1]        
+            bow = [(word_id,count) for word_id,count in 
+                    dict(Counter(doc)).items() if word_id!= 0]
+            docs_topic_distribution[:,d] = self.model[sorted(bow)]
+        return docs_topic_distribution
+
+    def query2topic(self, query_word_ids):
+        bow = [(word_id,count) for word_id,count in 
+                dict(Counter(query_word_ids)).items() if word_id!= 0]
+        return self.model[sorted(bow)]
 
 
-        # If you're finished training a model (=no more updates, only querying)
-        # model.init_sims(replace=True)
+class Doc2Vec():
+    def __init__(self, filename=None, documents=None, size=50, max_documents=500):
+        self.size = size
+        self.max_documents = max_documents
+        if filename == None:
+            self.model = gensim.models.Doc2Vec(
+                documents = documents, 
+                size = self.size)
+        else:
+            self.model = gensim.models.Doc2Vec.load(filename)
 
-# models = [word2vec_init]
-# 
-#     for epoch in range(1, 5 + 1):
-#         logging.info('Epoch %d', epoch)
-# 
-#         model = copy.deepcopy(models[-1])
-#         model.train(sentences)
-# 
-#         models.append(model)
-# 
-#     logging.info('Trained models: %s', models)
+    def save(self, filename='models/doc2vec' + str(self.size) + '.model'):
+        self.model.save(filename)
+

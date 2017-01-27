@@ -117,15 +117,80 @@ def run_lda(index, doc_names, topics, num_topics, max_documents):
                              num_topics=num_topics)
         lda.save(lda_model_filename)
 
+    print("Building document representations")
+    docs_representation_filename = 'tmp/doc2topics' + str(num_topics) + '.npy'
+    if os.path.isfile(docs_representation_filename):
+        with open(docs_representation_filename, 'rb') as f:
+            docs_representation = np.load(f)
+    else:
+        docs_representation = lda.docs2topic(index)
+        with open(docs_representation_filename, 'wb') as f:
+            np.save(f, docs_representation) 
+
     print("Scoring documents")
     lda_results = {}
     # Get top 1000 documents tf-idf ranking
     best_1000_doc_indices = utils.get_top_1000_tf_idf(topics)
-    #for query_id, query in topics.items():
+    token2id,_,_ = index.get_dictionary()
+    for query_id, query in topics.items():
+        # Get topic distribution for query
+        query_word_ids = models.query2word_ids(query, token2id)
+        query_representation = lda.query2topic(query_word_ids)
+        # Calculate the similarity with top 1000 document representations
+        lda_score = utils.cosine_similarity(query_representation,
+                                            docs_representation[:, best_1000_doc_indices])
+        lda_results[query_id] = list(zip(lda_score,
+                                [doc_names[i] for i in best_1000_doc_indices]))
 
     # Save results to file
     utils.write_run(model_name='lda', data=lda_results,
                     out_f='results/ranking_lda' + str(num_topics) + '.txt', 
+                    max_objects_per_query=1000)
+
+
+def run_doc2vec(index, doc_names, topics, size, max_documents):
+    print("Building / loading Doc2Vec")
+    #dictionary = pyndri.extract_dictionary(index)
+    #corpus = connector_classes.IndriCorpus(index, dictionary, max_documents=max_documents)
+    d2v_model_filename = 'models/doc2vec' + str(size) + '.model'
+    # Load model
+    if os.path.isfile(d2v_model_filename):
+        d2v = lsm_models.Doc2Vec(filename=d2v_model_filename,
+                             num_topics=num_topics)
+    # Train model
+    else:
+        d2v = lsm_models.Doc2Vec(corpus=corpus,
+                             num_topics=num_topics)
+        d2v.save(d2v_model_filename)
+
+    print("Building document representations")
+    docs_representation_filename = 'tmp/doc2topics' + str(num_topics) + '.npy'
+    if os.path.isfile(docs_representation_filename):
+        with open(docs_representation_filename, 'rb') as f:
+            docs_representation = np.load(f)
+    else:
+        docs_representation = d2v.docs2topic(index)
+        with open(docs_representation_filename, 'wb') as f:
+            np.save(f, docs_representation) 
+
+    print("Scoring documents")
+    d2v_results = {}
+    # Get top 1000 documents tf-idf ranking
+    best_1000_doc_indices = utils.get_top_1000_tf_idf(topics)
+    token2id,_,_ = index.get_dictionary()
+    for query_id, query in topics.items():
+        # Get topic distribution for query
+        query_word_ids = models.query2word_ids(query, token2id)
+        query_representation = d2v.query2topic(query_word_ids)
+        # Calculate the similarity with top 1000 document representations
+        d2v_score = utils.cosine_similarity(query_representation,
+                                            docs_representation[:, best_1000_doc_indices])
+        d2v_results[query_id] = list(zip(d2v_score,
+                                [doc_names[i] for i in best_1000_doc_indices]))
+
+    # Save results to file
+    utils.write_run(model_name='d2v', data=d2v_results,
+                    out_f='results/ranking_d2v' + str(num_topics) + '.txt', 
                     max_objects_per_query=1000)
 
 
@@ -156,10 +221,12 @@ def main():
         for embedding_size in [50, 100, 150, 200]:
             run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     elif FLAGS.method == 'lsi':
-        for num_topics in [50, 100, 150, 200]:
+        #for num_topics in [50, 100, 150, 200]:
+        for num_topics in [50, 100, 150]:
             run_lsi(index, doc_names, topics, num_topics, index.document_count())
     elif FLAGS.method == 'lda':
-        for num_topics in [50, 100, 150, 200]:
+        #for num_topics in [50, 100, 150, 200]:
+        for num_topics in [50, 100]:
             run_lda(index, doc_names, topics, num_topics, index.document_count())
 
 
