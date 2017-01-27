@@ -102,7 +102,7 @@ def get_document_names(index):
         doc_names.append(index.document(i)[0])
     return doc_names
 
-def get_top_1000_tf_idf():
+def get_top_1000_tf_idf(topics):
     # Load tf-idf model
     with open('tfidf.npy', 'rb') as f:
         tf_idf = np.load(f)
