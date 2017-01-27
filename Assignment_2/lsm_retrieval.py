@@ -221,20 +221,20 @@ def main():
         for embedding_size in [50, 100, 150, 200]:
             run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     elif FLAGS.method == 'lsi':
-        #for num_topics in [50, 100, 150, 200]:
-        for num_topics in [50, 100, 150]:
+        for num_topics in [50, 100, 150, 200]:
             run_lsi(index, doc_names, topics, num_topics, index.document_count())
     elif FLAGS.method == 'lda':
-        #for num_topics in [50, 100, 150, 200]:
-        for num_topics in [50, 100]:
+        for num_topics in [50, 100, 150, 200]:
             run_lda(index, doc_names, topics, num_topics, index.document_count())
-
+    elif FLAGS.method == 'doc2vec':
+        for num_topics in [50, 100, 150, 200]:
+            run_d2v(index, doc_names, topics, size, index.document_count())
 
 if __name__ == "__main__":
     # Command line arguments
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--method", type=str, default='word2vec',
+    parser.add_argument("--method", type=str, default='doc2vec',
                         help='Latent semanctic model [word2vec, lsi, lda, doc2vec].')
 
     FLAGS = parser.parse_args()
