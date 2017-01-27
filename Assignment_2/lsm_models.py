@@ -142,3 +142,16 @@ class Doc2Vec():
     def save(self, filename):
         self.model.save(filename)
 
+    def docs2vec(self, index):
+        _, id2token, _ = index.get_dictionary()
+        docs_representation = np.zeros([self.size, self.max_documents])
+        for d in range(self.max_documents):  
+            doc = index.document(d + 1)[1]
+            doc_words = [id2token.get(word_id) for word_id in doc if word_id != 0]
+            docs_representation[:,d] = self.model.infer_vector(doc_words)
+        return docs_representation
+
+    def query2vec(self, query):
+        query_tokens = query.lower().split(' ')
+        return self.model.infer_vector(query_tokens)
+

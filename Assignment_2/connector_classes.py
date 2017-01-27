@@ -66,3 +66,40 @@ class IndriCorpus(gensim.interfaces.CorpusABC):
     def __len__(self):     
         return self._maximum_document() - self.index.document_base()
 
+
+                        # Model: doc2vec
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+
+class IndriDocs(gensim.interfaces.CorpusABC):
+    """Integrates an Index with Gensim's Doc2Vec implementation."""
+
+    def __init__(self, index, dictionary, max_documents=None):
+        assert isinstance(index, pyndri.Index)
+
+        self.index = index
+        self.dictionary = dictionary
+        self.max_documents = max_documents
+        _,self.id2token,_ = index.get_dictionary()
+
+    def _maximum_document(self):
+        if self.max_documents is None:
+            return self.index.maximum_document()
+        else:
+            return min(
+                self.max_documents + self.index.document_base(),
+                self.index.maximum_document())
+
+    def __iter__(self):
+        """
+        The function that defines a corpus.
+        Iterating over the corpus must yield sparse vectors, one for each document.
+        """
+        for int_doc_id in range(self.index.document_base(),
+                                self._maximum_document()):
+            doc = self.index.document(int_doc_id)[1]            
+            tokens = [self.id2token(word_id) for word_id in doc]
+            yield TaggedDocument(tokens, [int_doc_id])
+
+    def __len__(self):     
+        return self._maximum_document() - self.index.document_base()
+
