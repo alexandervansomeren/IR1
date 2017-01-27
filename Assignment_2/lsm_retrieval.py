@@ -63,11 +63,13 @@ def run_lsi(index, doc_names, topics, num_topics, max_documents):
     # Load model
     if os.path.isfile(lsi_model_filename):
         lsi = lsm_models.LSI(filename=lsi_model_filename,
-                             num_topics=num_topics)
+                             num_topics=num_topics,
+                             max_documents=max_documents)
     # Train model
     else:
         lsi = lsm_models.LSI(corpus=corpus,
-                             num_topics=num_topics)
+                             num_topics=num_topics,
+                             max_documents=max_documents)
         lsi.save(lsi_model_filename)
 
     print("Building document representations")
@@ -109,11 +111,13 @@ def run_lda(index, doc_names, topics, num_topics, max_documents):
     # Load model
     if os.path.isfile(lda_model_filename):
         lda = lsm_models.LDA(filename=lda_model_filename,
-                             num_topics=num_topics)
+                             num_topics=num_topics,
+                             max_documents=max_documents)
     # Train model
     else:
         lda = lsm_models.LDA(corpus=corpus,
-                             num_topics=num_topics)
+                             num_topics=num_topics,
+                             max_documents=max_documents)
         lda.save(lda_model_filename)
 
     print("Building document representations")
@@ -224,7 +228,7 @@ def main():
             run_lsi(index, doc_names, topics, num_topics, index.document_count())
     elif FLAGS.method == 'lda':
         for num_topics in [50, 100]: #, 150, 200]:
-            run_lda(index, doc_names, topics, num_topics, 500)
+            run_lda(index, doc_names, topics, num_topics, index.document_count())
             #run_lda(index, doc_names, topics, num_topics, index.document_count())
     elif FLAGS.method == 'doc2vec':
         for size in [50, 100, 150, 200]:
