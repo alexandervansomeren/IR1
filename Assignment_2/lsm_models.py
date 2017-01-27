@@ -82,12 +82,6 @@ class LSI():
             #print(self.model[sorted(bow)])
             if len(bow) != 0:
                 docs_projection[:,d] = np.array([p for _,p in self.model[sorted(bow)]])
-            else:
-                print("Document " + str(d))
-                print(sorted(bow))
-                print(self.model[sorted(bow)])
-                print([p for _,p in self.model[sorted(bow)]])
-                print(docs_projection.shape)
         return docs_projection
 
     def query_projection(self, query_word_ids):
@@ -96,7 +90,6 @@ class LSI():
         if len(bow) != 0:
             query_projection = np.array([p for _,p in self.model[sorted(bow)]])
         else:
-            print(query_word_ids)
             query_projection = np.zeros([self.num_topics])
         return query_projection                
 

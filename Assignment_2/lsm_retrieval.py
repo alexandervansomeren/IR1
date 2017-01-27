@@ -224,7 +224,7 @@ def main():
         for embedding_size in [50, 100, 150, 200]:
             run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     elif FLAGS.method == 'lsi':
-        for num_topics in [50, 100, 150]: #, 200]:
+        for num_topics in [50, 100, 150, 200]:
             run_lsi(index, doc_names, topics, num_topics, index.document_count())
     elif FLAGS.method == 'lda':
         for num_topics in [50, 100]: #, 150, 200]:
