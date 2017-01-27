@@ -108,6 +108,7 @@ class LDA():
             doc = index.document(d + 1)[1]        
             bow = [(word_id,count) for word_id,count in 
                     dict(Counter(doc)).items() if word_id!= 0]
+            print(sorted(bow))
             docs_topic_distribution[:,d] = self.model[sorted(bow)]
         return docs_topic_distribution
 
