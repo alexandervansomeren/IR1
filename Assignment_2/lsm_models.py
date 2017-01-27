@@ -108,15 +108,19 @@ class LDA():
             doc = index.document(d + 1)[1]        
             bow = [(word_id,count) for word_id,count in 
                     dict(Counter(doc)).items() if word_id!= 0]
-            print(sorted(bow))
-            print(self.model[sorted(bow)])
-            docs_topic_distribution[:,d] = self.model[sorted(bow)]
+            topic_distribution = self.model[sorted(bow)]
+            for topic, prob in topic_distribution:
+                docs_topic_distribution[topic,d] = prob
         return docs_topic_distribution
 
     def query2topic(self, query_word_ids):
+        query_topic_distribution = np.zeros([self.num_topics])
         bow = [(word_id,count) for word_id,count in 
                 dict(Counter(query_word_ids)).items() if word_id!= 0]
-        return self.model[sorted(bow)]
+        topic_distribution = self.model[sorted(bow)]
+        for topic, prob in topic_distribution:
+            query_topic_distribution[topic,d] = prob
+        return query_topic_distribution
 
 
 class Doc2Vec():
