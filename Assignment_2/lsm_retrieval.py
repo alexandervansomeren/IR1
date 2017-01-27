@@ -217,7 +217,7 @@ def main():
 
     # Run LSM for command line argument method
     if FLAGS.method == 'word2vec':
-        for embedding_size in [50, 100, 150, 200]:
+        for embedding_size in [50, 100, 200]:
             run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     elif FLAGS.method == 'lsi':
         for num_topics in [50, 100, 150]: #, 200]:
@@ -242,7 +242,7 @@ def run_all():
     # Create directories if they do not exist
     initialize_folders()
 
-    for embedding_size in [50, 100, 200]:
+    for embedding_size in [50, 100, 150, 200]:
         run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     for num_topics in [50, 100, 150, 200]:
         run_lsi(index, doc_names, topics, num_topics, index.document_count())
