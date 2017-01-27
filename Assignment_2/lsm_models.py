@@ -83,7 +83,7 @@ class LSI():
             try:
                 docs_projection[:,d] = [p for _,p in self.model[sorted(bow)]]
             except:
-                print("Document " + d)
+                print("Document " + str(d))
                 print(sorted(bow))
                 print(self.model[sorted(bow)])
                 print([p for _,p in self.model[sorted(bow)]])
