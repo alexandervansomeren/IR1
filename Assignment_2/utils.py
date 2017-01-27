@@ -101,3 +101,19 @@ def get_document_names(index):
     for i in range(index.document_base(), index.maximum_document()):
         doc_names.append(index.document(i)[0])
     return doc_names
+
+def get_top_1000_tf_idf():
+    # Load tf-idf model
+    with open('tfidf.npy', 'rb') as f:
+        tf_idf = np.load(f)
+    # Load word to tf-idf index dict
+    with open('term2index.json', 'r') as f:
+        term2index = json.load(f)
+    # Get top 1000 documents tf-idf ranking
+    for query_id, query in topics.items():
+        query_indices = models.query2indices(query, term2index)
+        tf_idf_score = models.tf_idf_score(tf_idf, query_indices)
+        tf_idf_ranked_doc_indices = np.argsort(-tf_idf_score)
+        best_1000_doc_indices = tf_idf_ranked_doc_indices[0:1000]
+
+

@@ -5,6 +5,8 @@ import pandas as pd
 
 # set = 'test'
 set = 'validation'
+#task = 'task1'
+task = 'task2' # pakt nu wel alles uit results
 
 for result_file in glob.glob('./results/*.txt'):
     print("Processing" + result_file)
@@ -26,4 +28,4 @@ for trec_result_file in glob.glob('./trec_results_' + set + '/*.txt'):
 
 results = pd.concat(results, axis=1)
 print(results)
-results.to_csv('results_' + set + '_task2.csv')
+results.to_csv('results_' + set + '_' + task + '.csv')

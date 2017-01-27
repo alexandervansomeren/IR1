@@ -37,17 +37,11 @@ class IndriCorpus(gensim.interfaces.CorpusABC):
     """Integrates an Index with Gensim's LSI implementation."""
     
     def __init__(self, index, dictionary):
-        assert isinstance(index, pyndri.Index)
+        assert isinstance(index, pyndri.Index, max_documents=None)
 
         self.index = index
         self.dictionary = dictionary
-        self.max_documents = None
-
-        #if input is not None:
-        #    self.dictionary.add_documents(self.get_texts())
-        #else:
-        #    logger.warning("No input document stream provided; assuming "
-        #                   "dictionary will be initialized some other way.")
+        self.max_documents = max_documents
 
     def _maximum_document(self):
         if self.max_documents is None:
@@ -68,8 +62,6 @@ class IndriCorpus(gensim.interfaces.CorpusABC):
 
             bow = [(word_id,count) for word_id,count in dict(Counter(doc)).items() if word_id!= 0]
             yield sorted(bow)
-           
-            #yield self.dictionary.doc2bow(doc, allow_update=False)
 
     def __len__(self):     
         return self._maximum_document() - self.index.document_base()

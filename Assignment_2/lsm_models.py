@@ -37,7 +37,7 @@ class Word2Vec():
     def docs2vec(self, index):
         _, id2token, _ = index.get_dictionary()
         docs_representation = np.zeros([self.embedding_size, self.max_documents])
-        for d in range(self.max_documents):  # index.maximum_document()):
+        for d in range(self.max_documents):  
             doc = index.document(d + 1)[1]
             doc_words = [id2token.get(word_id) for word_id in doc if word_id != 0]
             doc_words = [word for word in doc_words if index.term_count(word) >= 5]
@@ -58,20 +58,38 @@ class Word2Vec():
 
 
 class LSI():
-    def __init__(self, filename=None, corpus=None, num_topics=50):
+    def __init__(self, filename=None, corpus=None, num_topics=50, max_documents=500):
+        self.num_topics = num_topics
+        self.max_documents = max_documents
         if filename == None:
             self.model = gensim.models.LsiModel(
                 corpus=corpus,
-                num_topics=num_topics)  # Latent dimensions
+                num_topics=self.num_topics)  # Latent dimensions
         else:
             self.model = gensim.models.LsiModel.load(filename)
 
     def save(self, filename='models/lsi.model'):
         self.model.save(filename)
 
+    def docs_projection(self, index):
+        docs_projection = np.zeros([self.num_topics, self.max_documents])
+        for d in range(self.max_documents):
+            doc = index.document(d + 1)[1]        
+            bow = [(word_id,count) for word_id,count in 
+                    dict(Counter(doc)).items() if word_id!= 0]
+            docs_projection[:,d] = self.model[sorted(bow)]
+        return docs_projection
+
+    def query_projection(self, query_word_ids):
+        bow = [(word_id,count) for word_id,count in 
+                dict(Counter(query_word_ids)).items() if word_id!= 0]
+        return self.model[sorted(bow)]
+                
 
 class LDA():
-    def __init__(self, filename=None, corpus=None, num_topics=50):
+    def __init__(self, filename=None, corpus=None, num_topics=50, max_documents=500):
+        self.num_topics = num_topics
+        self.max_documents = max_documents
         if filename == None:
             self.model = gensim.models.LdaModel(
                 corpus=corpus,
