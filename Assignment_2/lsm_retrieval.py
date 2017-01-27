@@ -60,7 +60,7 @@ def run_lsi(index, doc_names, topics, num_topics, max_documents):
     print("Building / loading LSI")
     dictionary = pyndri.extract_dictionary(index)
     corpus = connector_classes.IndriCorpus(index, dictionary, max_documents=max_documents)
-    lsi_model_filename = 'models/lsi.model' + str(num_topics)
+    lsi_model_filename = 'models/lsi' + str(num_topics) + '.model'
     # Load model
     if os.path.isfile(lsi_model_filename):
         lsi = lsm_models.LSI(filename=lsi_model_filename,
@@ -106,7 +106,7 @@ def run_lda(index, doc_names, topics, num_topics, max_documents):
     print("Building / loading LDA")
     dictionary = pyndri.extract_dictionary(index)
     corpus = connector_classes.IndriCorpus(index, dictionary, max_documents=max_documents)
-    lda_model_filename = 'models/lda.model' + str(num_topics)
+    lda_model_filename = 'models/lda' + str(num_topics) + '.model'
     # Load model
     if os.path.isfile(lda_model_filename):
         lda = lsm_models.LDA(filename=lda_model_filename,

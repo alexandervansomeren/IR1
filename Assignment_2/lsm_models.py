@@ -68,7 +68,7 @@ class LSI():
         else:
             self.model = gensim.models.LsiModel.load(filename)
 
-    def save(self, filename='models/lsi' + str(self.num_topics) + '.model'):
+    def save(self, filename):
         self.model.save(filename)
 
     def docs_projection(self, index):
@@ -97,7 +97,7 @@ class LDA():
         else:
             self.model = gensim.models.LdaModel.load(filename)
 
-    def save(self, filename='models/lda' + str(self.num_topics) + '.model'):
+    def save(self, filename):
         self.model.save(filename)
 
     def docs2topic(self, index):
