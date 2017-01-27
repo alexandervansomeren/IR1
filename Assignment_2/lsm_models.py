@@ -126,6 +126,6 @@ class Doc2Vec():
         else:
             self.model = gensim.models.Doc2Vec.load(filename)
 
-    def save(self, filename='models/doc2vec' + str(self.size) + '.model'):
+    def save(self, filename):
         self.model.save(filename)
 
