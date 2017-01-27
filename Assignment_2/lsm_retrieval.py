@@ -43,7 +43,7 @@ def run_w2v(index, doc_names, topics, embedding_size, max_documents):
     for query_id, query in topics.items():
         # Get word2vec representation for query and top 1000 docs
         query_representation = w2v.query2vec(query)
-        top_docs_representation = docs_representation[:, best_1000_doc_indices[query_id]]
+        top_docs_representation = docs_representation[:,best_1000_doc_indices[query_id]]
         # Calculate the similarity with top 1000 document representations
         w2v_score = utils.cosine_similarity(query_representation, top_docs_representation)
         w2v_results[query_id] = list(zip(w2v_score, 
@@ -86,14 +86,14 @@ def run_lsi(index, doc_names, topics, num_topics, max_documents):
     best_1000_doc_indices = utils.get_top_1000_tf_idf(topics)
     token2id,_,_ = index.get_dictionary()
     for query_id, query in topics.items():
-        # Get projected representation for query
+        # Get projected representation for query and top 1000 docs
         query_word_ids = models.query2word_ids(query, token2id)
         query_projection = lsi.query_projection(query_word_ids)
+        top_docs_representation = docs_representation[:,best_1000_indices[query_id]]
         # Calculate the similarity with top 1000 document representations
-        lsi_score = utils.cosine_similarity(query_projection,
-                                            docs_representation[:, best_1000_doc_indices])
+        lsi_score = utils.cosine_similarity(query_projection, top_docs_representation)
         lsi_results[query_id] = list(zip(lsi_score,
-                                [doc_names[i] for i in best_1000_doc_indices]))
+                                [doc_names[i] for i in best_1000_doc_indices[query_id]]))
 
     # Save results to file
     utils.write_run(model_name='lsi', data=lsi_results,
@@ -217,7 +217,7 @@ def main():
 
     # Run LSM for command line argument method
     if FLAGS.method == 'word2vec':
-        for embedding_size in [50, 100, 200]:
+        for embedding_size in [50, 100, 150, 200]:
             run_w2v(index, doc_names, topics, embedding_size, index.document_count())
     elif FLAGS.method == 'lsi':
         for num_topics in [50, 100, 150]: #, 200]:
@@ -254,7 +254,7 @@ if __name__ == "__main__":
     # Command line arguments
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--method", type=str, default='word2vec',
+    parser.add_argument("--method", type=str, default='lsi',
                         help='Latent semanctic model [word2vec, lsi, lda, doc2vec].')
 
     FLAGS = parser.parse_args()
