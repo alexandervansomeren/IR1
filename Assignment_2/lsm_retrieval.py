@@ -230,13 +230,35 @@ def main():
         for size in [50, 100, 150, 200]:
             run_d2v(index, doc_names, topics, size, index.document_count())
 
+def run_all():
+    # Get documents
+    index = pyndri.Index('index/')
+    token2id, id2token, _ = index.get_dictionary()
+    doc_names = utils.get_document_names(index)
+
+    # Get queries
+    with open('./ap_88_89/topics_title', 'r') as f_topics:
+        topics = utils.parse_topics(f_topics)
+
+    # Create directories if they do not exist
+    initialize_folders()
+
+    for embedding_size in [50, 100, 150, 200]:
+        run_w2v(index, doc_names, topics, embedding_size, index.document_count())
+    for num_topics in [50, 100, 150, 200]:
+        run_lsi(index, doc_names, topics, num_topics, index.document_count())
+    for num_topics in [50, 100, 150, 200]:
+        run_lda(index, doc_names, topics, num_topics, index.document_count())
+
+
 if __name__ == "__main__":
     # Command line arguments
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--method", type=str, default='doc2vec',
+    parser.add_argument("--method", type=str, default='word2vec',
                         help='Latent semanctic model [word2vec, lsi, lda, doc2vec].')
 
     FLAGS = parser.parse_args()
 
-    main()
+    #main()
+    run_all()
