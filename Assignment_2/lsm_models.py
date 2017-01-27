@@ -80,9 +80,9 @@ class LSI():
             bow = [(word_id,count) for word_id,count in 
                     dict(Counter(doc)).items() if word_id!= 0]
             #print(self.model[sorted(bow)])
-            try:
+            if len(bow) != 0:
                 docs_projection[:,d] = [p for _,p in self.model[sorted(bow)]]
-            except:
+            else:
                 print("Document " + str(d))
                 print(sorted(bow))
                 print(self.model[sorted(bow)])
