@@ -148,7 +148,7 @@ def run_lda(index, doc_names, topics, num_topics, max_documents):
                     max_objects_per_query=1000)
 
 
-def run_doc2vec(index, doc_names, topics, size, max_documents):
+def run_d2v(index, doc_names, topics, size, max_documents):
     print("Building / loading Doc2Vec")
     #dictionary = pyndri.extract_dictionary(index)
     #corpus = connector_classes.IndriCorpus(index, dictionary, max_documents=max_documents)
