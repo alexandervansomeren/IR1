@@ -81,16 +81,17 @@ class LSI():
                     dict(Counter(doc)).items() if word_id!= 0]
             #print(self.model[sorted(bow)])
             if len(bow) != 0:
-                docs_projection[:,d] = np.array([p for _,p in self.model[sorted(bow)]])
+                for topic, projection in self.model[sorted(bow)]:
+                    docs_projection[topic,d] = projection
         return docs_projection
 
     def query_projection(self, query_word_ids):
+        query_projection = np.zeros([self.num_topics])
         bow = [(word_id,count) for word_id,count in 
                 dict(Counter(query_word_ids)).items() if word_id!= 0]
         if len(bow) != 0:
-            query_projection = np.array([p for _,p in self.model[sorted(bow)]])
-        else:
-            query_projection = np.zeros([self.num_topics])
+            for topic, projection in self.model[sorted(bow)]:
+                query_projection[topic] = projection
         return query_projection                
 
 class LDA():
