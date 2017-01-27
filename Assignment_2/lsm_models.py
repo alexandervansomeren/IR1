@@ -86,7 +86,7 @@ class LSI():
     def query_projection(self, query_word_ids):
         bow = [(word_id,count) for word_id,count in 
                 dict(Counter(query_word_ids)).items() if word_id!= 0]
-        return self.model[sorted(bow)]
+        return np.array([p for _,p in self.model[sorted(bow)]])
                 
 
 class LDA():
