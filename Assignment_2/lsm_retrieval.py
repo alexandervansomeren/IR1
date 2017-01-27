@@ -227,7 +227,7 @@ def main():
         for num_topics in [50, 100, 150, 200]:
             run_lda(index, doc_names, topics, num_topics, index.document_count())
     elif FLAGS.method == 'doc2vec':
-        for num_topics in [50, 100, 150, 200]:
+        for size in [50, 100, 150, 200]:
             run_d2v(index, doc_names, topics, size, index.document_count())
 
 if __name__ == "__main__":
