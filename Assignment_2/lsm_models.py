@@ -119,7 +119,7 @@ class LDA():
                 dict(Counter(query_word_ids)).items() if word_id!= 0]
         topic_distribution = self.model[sorted(bow)]
         for topic, prob in topic_distribution:
-            query_topic_distribution[topic,d] = prob
+            query_topic_distribution[topic] = prob
         return query_topic_distribution
 
 
