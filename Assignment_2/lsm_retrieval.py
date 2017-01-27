@@ -132,14 +132,14 @@ def run_lda(index, doc_names, topics, num_topics, max_documents):
     best_1000_doc_indices = utils.get_top_1000_tf_idf(topics)
     token2id,_,_ = index.get_dictionary()
     for query_id, query in topics.items():
-        # Get topic distribution for query
+        # Get topic distribution for query and top 1000 docs
         query_word_ids = models.query2word_ids(query, token2id)
         query_representation = lda.query2topic(query_word_ids)
+        top_docs_representation = docs_representation[:,best_1000_indices[query_id]]        
         # Calculate the similarity with top 1000 document representations
-        lda_score = utils.cosine_similarity(query_representation,
-                                            docs_representation[:, best_1000_doc_indices])
+        lda_score = utils.cosine_similarity(query_representation, top_docs_representation)
         lda_results[query_id] = list(zip(lda_score,
-                                [doc_names[i] for i in best_1000_doc_indices]))
+                                [doc_names[i] for i in best_1000_doc_indices[query_id]]))
 
     # Save results to file
     utils.write_run(model_name='lda', data=lda_results,
@@ -178,14 +178,14 @@ def run_d2v(index, doc_names, topics, size, max_documents):
     best_1000_doc_indices = utils.get_top_1000_tf_idf(topics)
     token2id,_,_ = index.get_dictionary()
     for query_id, query in topics.items():
-        # Get topic distribution for query
+        # Get topic distribution for query and top 1000 docs
         query_word_ids = models.query2word_ids(query, token2id)
         query_representation = d2v.query2topic(query_word_ids)
+        top_docs_representation = docs_representation[:,best_1000_indices[query_id]]        
         # Calculate the similarity with top 1000 document representations
-        d2v_score = utils.cosine_similarity(query_representation,
-                                            docs_representation[:, best_1000_doc_indices])
+        d2v_score = utils.cosine_similarity(query_representation, top_docs_representation)
         d2v_results[query_id] = list(zip(d2v_score,
-                                [doc_names[i] for i in best_1000_doc_indices]))
+                                [doc_names[i] for i in best_1000_doc_indices[query_id]]))
 
     # Save results to file
     utils.write_run(model_name='d2v', data=d2v_results,
@@ -254,7 +254,7 @@ if __name__ == "__main__":
     # Command line arguments
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--method", type=str, default='lsi',
+    parser.add_argument("--method", type=str, default='lda',
                         help='Latent semanctic model [word2vec, lsi, lda, doc2vec].')
 
     FLAGS = parser.parse_args()
