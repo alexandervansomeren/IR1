@@ -121,7 +121,7 @@ def run_lda(index, doc_names, topics, num_topics, max_documents):
     lda_results = {}
     # Get top 1000 documents tf-idf ranking
     best_1000_doc_indices = utils.get_top_1000_tf_idf(topics)
-    for query_id, query in topics.items():
+    #for query_id, query in topics.items():
 
     # Save results to file
     utils.write_run(model_name='lda', data=lda_results,
