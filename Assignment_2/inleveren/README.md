@@ -3,6 +3,7 @@
 ##### Task 1 
 Run [run_models.py]: creates tf and df matrices 
 Run [evaluate_models.py]: rank all models in task 1
+Run [plm.py]: rank plm in task 1
 
 ##### Task 2
 Run [lsm_retrieval.py --method ['word2vec', 'lsi', 'lda', 'doc2vec']]: 
