@@ -17,6 +17,9 @@ def main():
         model = LambdaRankHW(algorithm, number_of_features)
         model.train_with_queries(train_queries, num_of_epochs)
 
+        test_queries = query.load_queries(fold_dir + '/test.txt', number_of_features)
+
+
 
 
 

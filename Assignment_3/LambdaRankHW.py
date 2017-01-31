@@ -155,11 +155,15 @@ class LambdaRankHW:
 
     def train_once(self, X_train, query, labels):
 
+        resize_value= BATCH_SIZE
+        if self.algorithm == 'pointwise':
+            resize_value=min(resize_value,len(labels))
+
         # TODO: Comment out to obtain the lambdas
         # lambdas = self.compute_lambdas_theano(query,labels)
-        # lambdas.resize((BATCH_SIZE, ))
+        # lambdas.resize((resize_value, ))
 
-        X_train.resize((BATCH_SIZE, self.feature_count),refcheck=False)
+        X_train.resize((resize_value, self.feature_count),refcheck=False)
 
         # TODO: Comment out (and comment in) to replace labels by lambdas
         #batch_train_loss = self.iter_funcs['train'](X_train, lambdas)
