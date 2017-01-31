@@ -18,12 +18,8 @@ MOMENTUM = 0.95
 
 
 # TODO: Implement the lambda loss function
-def lambda_loss(output, y_batch):
-    print "-------------------"
-    print "In lambda loss"
-    print "Output: " + str(output)
-    print "Y_Batch: " + str(y_batch)
-    raise "Unimplemented"
+def lambda_loss(output, lambdas):
+    return lambdas*output
 
 
 class LambdaRankHW:
@@ -38,6 +34,7 @@ class LambdaRankHW:
     # train_queries are what load_queries returns - implemented in query.py
     def train_with_queries(self, train_queries, num_epochs):
         try:
+            now = time.time()
             for epoch in self.train(train_queries):
                 if epoch['number'] % 10 == 0:
                     print("Epoch {} of {} took {:.3f}s".format(
@@ -146,32 +143,39 @@ class LambdaRankHW:
 
     # TODO: Implement the aggregate (i.e. per document) lambda function
     def lambda_function(self, labels, scores):
-        print labels
-        print scores
-        pass
+        # print "-------------"
+        # print labels
+        if 1 in labels:
+            scores = np.array(scores, dtype='float32')
+            relevant_index = np.where(labels == 1)[0][0]  # assumes only one relevant document (homepage finding task)
+            relevant_score = scores[relevant_index]
+
+            lamdas = 1.0/(1+np.exp(relevant_score-scores))
+
+            lamdas[relevant_index] = 0
+            lamdas[relevant_index] = -1.0*lamdas.sum()
+            return lamdas
+        else:
+            return np.zeros(len(labels), dtype='float32')
 
     def compute_lambdas_theano(self, query, labels):
         scores = self.score(query).flatten()
-        result = self.lambda_funtion(labels, scores[:len(labels)])
+        result = self.lambda_function(labels, scores[:len(labels)])
         return result
 
     def train_once(self, X_train, query, labels):
 
-        resize_value= BATCH_SIZE
+        resize_value = BATCH_SIZE
         if self.algorithm == 'pointwise':
-            resize_value=min(resize_value,len(labels))
+            resize_value = min(resize_value, len(labels))
 
-        # TODO: Comment out to obtain the lambdas
-        # lambdas = self.compute_lambdas_theano(query,labels)
-        # lambdas.resize((resize_value, ))
-
-        X_train.resize((resize_value, self.feature_count),refcheck=False)
+        X_train.resize((resize_value, self.feature_count), refcheck=False)
 
         if self.algorithm == 'pointwise':
             batch_train_loss = self.iter_funcs['train'](X_train, labels)
 
         # TODO: Comment out (and comment in) to replace labels by lambdas
-        elif self.algorithm == 'pairwise':
+        else:
             # TODO: Comment out to obtain the lambdas
             lambdas = self.compute_lambdas_theano(query, labels)
             lambdas.resize((resize_value,))
@@ -197,6 +201,7 @@ class LambdaRankHW:
                 batch_train_losses.append(batch_train_loss)
 
             avg_train_loss = np.mean(batch_train_losses)
+            print avg_train_loss
 
             yield {
                 'number': epoch,

@@ -9,7 +9,7 @@ FLAGS = None
 
 def main():
     number_of_features = 64
-    number_of_epochs = 1
+    number_of_epochs = 100
     algorithm = FLAGS.method
 
     for fold in range(1):  # 5
@@ -19,7 +19,7 @@ def main():
         model = LambdaRankHW.LambdaRankHW(algorithm, number_of_features)
         model.train_with_queries(train_queries, number_of_epochs)
 
-        test_queries = query.load_queries(fold_dir + '/test.txt', number_of_features)
+        # test_queries = query.load_queries(fold_dir + '/test.txt', number_of_features)
 
 
 
