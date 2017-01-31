@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # Command line arguments
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--method", type=str, default='pointwise',
+    parser.add_argument("--method", type=str, default='pairwise',
                         help='Learning to rank method [pointwise, pairwise, lambdarank].')
 
     FLAGS = parser.parse_args()

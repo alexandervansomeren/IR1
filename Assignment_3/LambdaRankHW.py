@@ -21,8 +21,8 @@ MOMENTUM = 0.95
 def lambda_loss(output, y_batch):
     print "-------------------"
     print "In lambda loss"
-    print "Output"
-    print "lambdas"
+    print "Output: " + str(output)
+    print "Y_Batch: " + str(y_batch)
     raise "Unimplemented"
 
 
