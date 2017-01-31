@@ -25,7 +25,8 @@ class LambdaRankHW:
 
     NUM_INSTANCES = count()
 
-    def __init__(self, feature_count):
+    def __init__(self, algorithm, feature_count):
+        self.algorithm = algorithm
         self.feature_count = feature_count
         self.output_layer = self.build_model(feature_count,1,BATCH_SIZE)
         self.iter_funcs = self.create_functions(self.output_layer)
@@ -99,9 +100,11 @@ class LambdaRankHW:
 
         # TODO: Change loss function
         # Point-wise loss function (squared error) - comment it out
-        loss_train = lasagne.objectives.squared_error(output,y_batch)
+        if self.algorithm == 'pointwise':
+            loss_train = lasagne.objectives.squared_error(output,y_batch)
         # Pairwise loss function - comment it in
-        # loss_train = lambda_loss(output,y_batch)
+        elif self.algorithm == 'pairwise' or self.algorithm == 'lambdarank':
+            loss_train = lambda_loss(output,y_batch)
 
         loss_train = loss_train.mean()
 
