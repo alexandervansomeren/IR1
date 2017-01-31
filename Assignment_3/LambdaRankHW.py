@@ -143,6 +143,7 @@ class LambdaRankHW:
     # TODO: Implement the aggregate (i.e. per document) lambda function
     def lambda_function(self, labels, scores):
         if 1 in labels:
+            # assumes only one relevant document (homepage finding task)
             relevant_index = np.where(labels==1)[0][0]
             relevant_score = scores[relevant_index]
             lambdas = 1./(1+np.exp(relevant_score-scores))
@@ -150,7 +151,7 @@ class LambdaRankHW:
             lambdas[relevant_index] = np.sum(-1.*lambdas)
             return np.array(lambdas, dtype='float32')
         else:
-            return np.zeros(len(scores), dtype='float32')
+            return np.zeros(len(labels), dtype='float32')
 
     def compute_lambdas_theano(self, query, labels):
         scores = self.score(query).flatten()
@@ -159,7 +160,7 @@ class LambdaRankHW:
 
     def train_once(self, X_train, query, labels):
 
-        resize_value= BATCH_SIZE
+        resize_value = BATCH_SIZE
         if self.algorithm == 'pointwise':
             resize_value=min(resize_value,len(labels))
 
@@ -169,7 +170,7 @@ class LambdaRankHW:
             batch_train_loss = self.iter_funcs['train'](X_train, labels)
 
         # TODO: Comment out (and comment in) to replace labels by lambdas
-        elif self.algorithm == 'pairwise':
+        else:
             # TODO: Comment out to obtain the lambdas
             lambdas = self.compute_lambdas_theano(query, labels)
             lambdas.resize((resize_value,))
@@ -195,6 +196,7 @@ class LambdaRankHW:
                 batch_train_losses.append(batch_train_loss)
 
             avg_train_loss = np.mean(batch_train_losses)
+
             print(avg_train_loss)
 
             yield {

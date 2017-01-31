@@ -10,9 +10,10 @@ FLAGS = None
 
 def main():
     number_of_features = 64
-    number_of_epochs = 10
+    number_of_epochs = 100
     algorithm = FLAGS.method
 
+    # Train 
     for fold in range(1):  # 5
         fold_dir = 'HP2003/Fold' + str(fold + 1)
         train_queries = query.load_queries(fold_dir + '/train.txt', number_of_features)
@@ -20,6 +21,7 @@ def main():
         model = LambdaRankHW.LambdaRankHW(algorithm, number_of_features)
         model.train_with_queries(train_queries, number_of_epochs)
 
+    # Test
     test_queries = query.load_queries(fold_dir + '/test.txt', number_of_features)
     queries = train_queries.values()
     for q in queries:
@@ -28,7 +30,7 @@ def main():
         relevance = relevance_labels[np.argsort(-scores)]
         if not 1 in relevance_labels: 
             print("no relevant docs")
-
+        #TODO compute NDCG
         
 
 def discounted_cumulative_gain_at_k(ranking, labels, k):
@@ -36,9 +38,6 @@ def discounted_cumulative_gain_at_k(ranking, labels, k):
     for rank, relevance in enumerate(ranking[0:k]):
         dcg += float(2 ** relevance - 1) / np.log2(rank + 2)
     return dcg
-
-
-
 
 if __name__ == "__main__":
     # Command line arguments
@@ -51,4 +50,3 @@ if __name__ == "__main__":
 
     main()
 
-    # if FLAGS.method
