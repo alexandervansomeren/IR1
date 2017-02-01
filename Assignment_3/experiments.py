@@ -77,15 +77,20 @@ if __name__ == "__main__":
 
     algorithm = FLAGS.method
 
-    result = main('lambdarank')
-#      results_pointwise = {}
-#      results_pairwise = {}
-#      for n_epochs in range(0, 110, 10):
-#          results_pointwise[n_epochs] = main('pointwise', number_of_epochs=n_epochs)
-#          results_pairwise[n_epochs] = main('pairwise', number_of_epochs=n_epochs)
-#      result_pointwise = pd.DataFrame.from_dict(results_pointwise, orient='index')
-#      result_pointwise.columns = ['pointwise']
-#      result_pairwise = pd.DataFrame.from_dict(results_pairwise, orient='index')
-#      result_pairwise.columns = ['pairwise']
-#      results = pd.concat([result_pairwise, result_pointwise], axis=1, join='inner')
-#      results.to_pickle('epoch_validation_results.pickle')
+    results_pointwise = {}
+    results_pairwise = {}
+    results_lambdarank = {}
+    for n_epochs in range(0, 110, 10):
+        results_pointwise[n_epochs] = main('pointwise', number_of_epochs=n_epochs)
+        results_pairwise[n_epochs] = main('pairwise', number_of_epochs=n_epochs)
+        results_lambdarank[n_epochs] = main('lambdarank', number_of_epochs=n_epochs)
+        result_pointwise = pd.DataFrame.from_dict(results_pointwise, orient='index')
+        result_pointwise.columns = ['pointwise']
+        result_pairwise = pd.DataFrame.from_dict(results_pairwise, orient='index')
+        result_pairwise.columns = ['pairwise']
+        result_lambdarank = pd.DataFrame.from_dict(results_lambdarank, orient='index')
+        result_lambdarank.columns = ['lambdarank']
+        results = pd.concat([result_pairwise, result_pointwise, result_lambdarank], 
+                             axis=1, join='inner')
+        results.to_pickle('epoch_validation_results.pickle')
+
