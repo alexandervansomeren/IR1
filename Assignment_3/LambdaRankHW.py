@@ -7,6 +7,7 @@ import theano
 import theano.tensor as T
 import time
 from itertools import count
+from utils import normalized_discounted_cumulative_gain_at_k
 import query
 
 NUM_EPOCHS = 500
@@ -19,7 +20,8 @@ MOMENTUM = 0.95
 
 # TODO: Implement the lambda loss function
 def lambda_loss(output, lambdas):
-    return output*lambdas
+    return output * lambdas
+
 
 class LambdaRankHW:
     NUM_INSTANCES = count()
@@ -29,11 +31,14 @@ class LambdaRankHW:
         self.feature_count = feature_count
         self.output_layer = self.build_model(feature_count, 1, BATCH_SIZE)
         self.iter_funcs = self.create_functions(self.output_layer)
+        if algorithm == 'lambdarank':
+            self.ndcg_at_max = normalized_discounted_cumulative_gain_at_k(optimal_ranking=[1] + [0] * 999, k=1000)
+            self.previous_ndcg = 1
 
     # train_queries are what load_queries returns - implemented in query.py
     def train_with_queries(self, train_queries, num_epochs):
         try:
-            now = time.time()            
+            now = time.time()
             for epoch in self.train(train_queries):
                 if epoch['number'] % 10 == 0:
                     print("Epoch {} of {} took {:.3f}s".format(
@@ -144,11 +149,11 @@ class LambdaRankHW:
     def lambda_function(self, labels, scores):
         if 1 in labels:
             # assumes only one relevant document (homepage finding task)
-            relevant_index = np.where(labels==1)[0][0]
+            relevant_index = np.where(labels == 1)[0][0]
             relevant_score = scores[relevant_index]
-            lambdas = 1./(1+np.exp(relevant_score-scores))
+            lambdas = 1. / (1 + np.exp(relevant_score - scores))
             lambdas[relevant_index] = 0
-            lambdas[relevant_index] = np.sum(-1.*lambdas)
+            lambdas[relevant_index] = np.sum(-1. * lambdas)
             return np.array(lambdas, dtype='float32')
         else:
             return np.zeros(len(labels), dtype='float32')
@@ -156,22 +161,27 @@ class LambdaRankHW:
     def compute_lambdas_theano(self, query, labels):
         scores = self.score(query).flatten()
         result = self.lambda_function(labels, scores[:len(labels)])
+        # if self.algorithm == 'lamdarank':
+        #     scores = self.score(query)
+        #     relevance_labels = query.get_labels()
+        #     relevance = relevance_labels[np.argsort(-scores, axis=0)]
+        #     ndcg = self.ndcg_at_max.compute(relevance, 10, normalize=True)
+        #     result *= np.abs(self.previous_ndcg - ndcg)
+        #     self.previous_ndcg = ndcg
         return result
 
     def train_once(self, X_train, query, labels):
 
         resize_value = BATCH_SIZE
         if self.algorithm == 'pointwise':
-            resize_value=min(resize_value,len(labels))
+            resize_value = min(resize_value, len(labels))
 
-        X_train.resize((resize_value, self.feature_count),refcheck=False)
+        X_train.resize((resize_value, self.feature_count), refcheck=False)
 
         if self.algorithm == 'pointwise':
             batch_train_loss = self.iter_funcs['train'](X_train, labels)
 
-        # TODO: Comment out (and comment in) to replace labels by lambdas
         else:
-            # TODO: Comment out to obtain the lambdas
             lambdas = self.compute_lambdas_theano(query, labels)
             lambdas.resize((resize_value,))
 
