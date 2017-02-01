@@ -154,6 +154,15 @@ class LambdaRankHW:
             lambdas = 1. / (1 + np.exp(relevant_score - scores))
             lambdas[relevant_index] = 0
             lambdas[relevant_index] = np.sum(-1. * lambdas)
+            if self.algorithm == 'lamdarank':
+                ranking = labels[np.argsort(-scores, axis=0)]
+                old_ndcg = self.ndcg_at_max.compute(ranking, k=1000)
+                for doc_id in range(len(labels)):
+                    if not doc_id == relevant_index:
+                        swapped_ranking = [0]*1000
+                        swapped_ranking[doc_id] = 1.0
+                        new_ndcg = self.ndcg_at_max.compute(swapped_ranking, k=1000)
+                        lambdas[doc_id] *= np.abs(old_ndcg - new_ndcg)
             return np.array(lambdas, dtype='float32')
         else:
             return np.zeros(len(labels), dtype='float32')
