@@ -12,7 +12,7 @@ FLAGS = None
 
 
 def main(algorithm, number_of_features=64, number_of_epochs=10):
-    ndcg_at_10 = normalized_discounted_cumulative_gain_at_k(optimal_ranking=[1] + [0] * 9, k=10)
+    ndcg_at_10 = normalized_discounted_cumulative_gain_at_k(optimal_ranking=[1] + [0] * 10, k=10)
 
     ndcgs = []
     for fold in range(5):  # 5
@@ -55,6 +55,8 @@ def main(algorithm, number_of_features=64, number_of_epochs=10):
             #     if not 1 in relevance_labels:
             #         print("no relevant docs")
             #     ndcgs.append(ndcg_at_10.compute(relevance, 10, normalize=True))
+        print("Average Fold")
+        print(np.mean(np.array(ndcgs)))
 
     ndcg_at_10 = np.array(ndcgs)
     print '----------------'
@@ -75,14 +77,15 @@ if __name__ == "__main__":
 
     algorithm = FLAGS.method
 
-    results_pointwise = {}
-    results_pairwise = {}
-    for n_epochs in range(0, 210, 10):
-        results_pointwise[n_epochs] = main('pointwise', number_of_epochs=n_epochs)
-        results_pairwise[n_epochs] = main('pairwise', number_of_epochs=n_epochs)
-    result_pointwise = pd.DataFrame.from_dict(results_pointwise, orient='index')
-    result_pointwise.columns = ['pointwise']
-    result_pairwise = pd.DataFrame.from_dict(results_pairwise, orient='index')
-    result_pairwise.columns = ['pairwise']
-    results = pd.concat([result_pairwise, result_pointwise], axis=1, join='inner')
-    results.to_pickle('epoch_validation_results.pickle')
+    result = main('lambdarank')
+#      results_pointwise = {}
+#      results_pairwise = {}
+#      for n_epochs in range(0, 110, 10):
+#          results_pointwise[n_epochs] = main('pointwise', number_of_epochs=n_epochs)
+#          results_pairwise[n_epochs] = main('pairwise', number_of_epochs=n_epochs)
+#      result_pointwise = pd.DataFrame.from_dict(results_pointwise, orient='index')
+#      result_pointwise.columns = ['pointwise']
+#      result_pairwise = pd.DataFrame.from_dict(results_pairwise, orient='index')
+#      result_pairwise.columns = ['pairwise']
+#      results = pd.concat([result_pairwise, result_pointwise], axis=1, join='inner')
+#      results.to_pickle('epoch_validation_results.pickle')

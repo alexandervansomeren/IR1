@@ -2,7 +2,7 @@ import numpy as np
 
 
 class normalized_discounted_cumulative_gain_at_k:
-    idcg = 1
+    idcg = 1.
 
     def __init__(self, optimal_ranking, k):
         self.optimal_ranking = optimal_ranking
@@ -14,9 +14,9 @@ class normalized_discounted_cumulative_gain_at_k:
             k = self.k
         dcg = 0.0
         for rank, relevance in enumerate(ranking[0:k]):
-            dcg += float(2 ** relevance - 1) / np.log2(rank + 2)
+            dcg += float(2 ** relevance - 1) / np.log2(rank + 2.)
+            if relevance == 1:
+                break
         if normalize:
             dcg /= self.idcg
-        if dcg > 1:
-            dcg = 1.0
         return dcg
